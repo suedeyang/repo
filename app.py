@@ -4,6 +4,7 @@ from datetime import time
 import datetime
 from PIL import Image
 
+
 st.header("滑桿slider使用")
 age = st.slider('How old are you?', 0, 130, 25)
 st.write("你的年齡是",age)
@@ -87,3 +88,65 @@ st.image(image,caption='山邊的日出')
 #video_bytes = video_file.read()
 #st.video(video_bytes)
 st.video('https://youtu.be/FVsvrFAWDTM') 
+
+
+st.header("LAYOUT")
+add_selectbox=st.sidebar.selectbox(
+    "你想要如何與我聯繫?",('Email','電話','In pserson')
+)
+st.sidebar.write("你選擇了",add_selectbox)
+
+col1,col2,col3 =st.columns([3,2,1])
+col1.write('木要抄完')
+col1.video('https://www.youtube.com/watch?v=J5-4ZYnlGYo')
+col2.write('TVBS')
+col2.video('https://www.youtube.com/watch?v=V0WxUakDV7M')
+col3.write('TVBS')
+col3.video('https://www.youtube.com/watch?v=V0WxUakDV7M')
+
+
+with st.expander('點我看更多',expanded=False):
+    st.write('123123')
+    st.video('https://www.youtube.com/watch?v=V0WxUakDV7M')
+    st.image("https://static.streamlit.io/examples/dice.jpg")
+
+with st.container():
+    st.write("This is inside the containerhis is inside the containerhis is inside the containerhis is inside the containerhis is inside the containerhis is inside the containerhis is inside the containerhis is inside the containerhis is inside the containerhis is inside the containerhis is inside the containerhis is inside the containerhis is inside the containerhis is inside the containerhis is inside the containerhis is inside the containerhis is inside the containerhis is inside the containerhis is inside the containerhis is inside the containerhis is inside the containerhis is inside the container")
+    # You can call any Streamlit command, including custom components:
+    
+st.write("This is outside the container")
+
+
+
+container = st.container()
+container.write("This is inside the containeside the contside the contside the contr")
+st.write("This is outside the container")
+# Now insert some more in the container
+container.write("This is insiside the contside the contside the contde too")
+
+
+
+st.title('empty的使用-用完會清除消失')
+
+placeholder = st.empty()
+
+# Replace the placeholder with some text:
+placeholder.text("Hello")
+# Replace the text with a chart:
+placeholder.line_chart({"data": [1, 5, 2, 6]})
+# Replace the chart with several elements:
+with placeholder.container():
+    st.write("This is one element")
+    st.write("This is another")
+# Clear all those elements:
+placeholder.empty()
+
+
+
+import time
+with st.empty():
+    for seconds in range(10):
+        st.write(f"⏳ {seconds} seconds have passed")
+        time.sleep(1)
+    st.write("✔️ 0.5 minute over!")
+st.write("123")
