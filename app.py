@@ -1,14 +1,68 @@
 import pandas as pd
 import streamlit as st
-from datetime import time
+#from datetime import time
 import datetime
 from PIL import Image
+import time
+
+with st.form("my_form"):
+    st.write("Inside the form")
+    slider_val = st.slider("Form slider",0,10)
+    checkbox_val = st.checkbox("Form checkbox")
+    # Every form must have a submit button.
+    submitted = st.form_submit_button("Submit")
+    if submitted:
+        st.write("slider", slider_val, "checkbox", checkbox_val)
+st.write("Outside the form")
+
+form = st.form("my_form2")
+form.slider("Inside the form")
+st.slider("Outside the form")
+# Now add a submit button to the form:
+form.form_submit_button("Submit")
+
+
+
+
+
+st.header('狀態元件')
+with st.spinner('Wait for it...'):
+    time.sleep(3)
+st.success('Done!')
+st.error('This is an error')
+st.warning('This is a warning')
+st.balloons()
+st.info('This is a purely informational message')
+e = RuntimeError('This is an exception of type RuntimeError')
+st.exception(e)
+
+
+my_bar=st.progress(0)
+for percent_complete in range(100):
+    time.sleep(0.01)
+    my_bar.progress(percent_complete + 1)
+
+
+st.header('流程控制')
+name = st.text_input('Name')
+if not name:
+    st.warning('Please input a name.')
+    st.stop()
+    st.success('Thank you for inputting a name.')
+
+
+
 
 
 st.header("滑桿slider使用")
 age = st.slider('How old are you?', 0, 130, 25)
 st.write("你的年齡是",age)
 
+
+
+
+
+from datetime import time
 values=st.slider('設定一個年齡',0.0,100.0,(25.0,75.0),0.5)
 st.write('範圍是',values[0],"到",values[1])
 
@@ -150,3 +204,6 @@ with st.empty():
         time.sleep(1)
     st.write("✔️ 0.5 minute over!")
 st.write("123")
+
+
+
