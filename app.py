@@ -5,6 +5,12 @@ import datetime
 from PIL import Image
 import time
 
+st.set_page_config(layout="wide")
+
+
+
+
+
 with st.form("my_form"):
     st.write("Inside the form")
     slider_val = st.slider("Form slider",0,10)
