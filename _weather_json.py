@@ -5,7 +5,7 @@ import datetime
 import time
 from streamlit_autorefresh import st_autorefresh
 
-st_autorefresh(interval=120000) # 2000 milliseconds (2 seconds)
+st_autorefresh(interval=600000) # 2000 milliseconds (2 seconds)
 
 st.markdown("""
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossorigin="anonymous">
@@ -18,6 +18,7 @@ st.markdown("""
 
 
 url='https://data.epa.gov.tw/api/v1/aqx_p_432?limit=1000&api_key=9be7b239-557b-4c10-9775-78cadfc555e9&sort=ImportDate%20desc&format=json'
+url2='https://data.epa.gov.tw/api/v1/uv_s_01?limit=1000&api_key=9be7b239-557b-4c10-9775-78cadfc555e9&sort=ImportDate%20desc&format=json'
 
 def get_data():
     raw_data=requests.get(url)
