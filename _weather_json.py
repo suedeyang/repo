@@ -9,13 +9,15 @@ from streamlit_autorefresh import st_autorefresh
 st_autorefresh(interval=600000) # 2000 milliseconds (2 seconds)
 
 
-st.markdown('<h1 style="margin-top:-1em;font-size: 5rem;text-align:center;"><strong>龍華國小環境指數</strong></h1>', unsafe_allow_html=True)
-st.markdown(' --- ')
+st.markdown('<h1 style="font-family: Noto Sans TC, sans-serif;margin-top:-1em;font-size: 5rem;text-align:center;"><strong>龍華國小環境指數</strong></h1>', unsafe_allow_html=True)
+
 st.markdown("""
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossorigin="anonymous">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossorigin="anonymous">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@500&display=swap" rel="stylesheet">
 <style>
-.big-font {
-    font-size:300px !important;
+body{
+  font-family: 'Noto Sans TC', sans-serif;
 }
 </style>
 """, unsafe_allow_html=True)
@@ -87,16 +89,16 @@ def display_data():
     update_time=aqidata['ImportDate']
     print(update_time[11:16])
     cola,colb=st.columns(2) 
-    cola.markdown(f'<h1 style="font-size: 12rem;color:{aqi_font_color};text-align:center;"><strong>{AQI}</strong></h1>', unsafe_allow_html=True)
-    cola.markdown(f'<h1 style="margin-top: -1em;text-align:center;">AQI空氣指數 <b>{AQI_STATUS}</b></h1>',unsafe_allow_html=True )
-    colb.markdown(f'<h1 style="font-size: 12rem;color:{uvi_font_color};text-align:center;"><strong>{UVI}</strong></h1>', unsafe_allow_html=True)
+    cola.markdown(f'<h1 style="font-family: Noto Sans TC, sans-serif;text-shadow: 2px 2px 8px #000000;font-size: 12rem;color:{aqi_font_color};text-align:center;"><strong>{AQI}</strong></h1>', unsafe_allow_html=True)
+    cola.markdown(f'<h1 style="margin-top: -1em;text-align:center;">AQI空品指數 <b>{AQI_STATUS}</b></h1>',unsafe_allow_html=True )
+    colb.markdown(f'<h1 style="font-family: Noto Sans TC, sans-serif;text-shadow: 2px 2px 8px #000000;font-size: 12rem;color:{uvi_font_color};text-align:center;"><strong>{UVI}</strong></h1>', unsafe_allow_html=True)
     colb.markdown(f'<h1 style="margin-top: -1em;text-align:center;">紫外線指數<b>{uvi_status}</b></h1>',unsafe_allow_html=True )
     st.markdown(' --- ')
 
     col1,col2,col3,col4,col5=st.columns(5)
     
-    col1.metric("PM2.5即時",value=aqidata['PM2.5'],delta=pm2_5_delta)
-    col2.metric("PM10即時",value=aqidata['PM10'],delta=pm10_delta)
+    col1.metric("PM2.5數值",value=aqidata['PM2.5'],delta=pm2_5_delta)
+    col2.metric("PM10數值",value=aqidata['PM10'],delta=pm10_delta)
     col3.metric("臭氧",value=aqidata['O3'],delta=ozone_delta)
     col4.metric("測站",value=aqidata['SiteName'])
     col5.metric("資料更新時間",value=update_time[11:16])
