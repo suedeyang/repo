@@ -9,7 +9,7 @@ from streamlit_autorefresh import st_autorefresh
 st_autorefresh(interval=600000) # 2000 milliseconds (2 seconds)
 
 
-st.markdown('<h1 style="font-family: Noto Sans TC, sans-serif;margin-top:-1em;font-size: 5rem;text-align:center;"><strong>龍華國小環境指數</strong></h1>', unsafe_allow_html=True)
+st.markdown('<h1 style="font-family: Noto Sans TC, sans-serif;margin-top:-1em;font-size: 5rem;text-align:center;">龍華國小環境指數</h1>', unsafe_allow_html=True)
 
 st.markdown("""
 
@@ -37,7 +37,8 @@ def get_uvi_data():
     uvi_raw_data=requests.get(url_UVI)
     uvi_datas=uvi_raw_data.json()['records']
     for uvi_data in uvi_datas:
-        if uvi_data['SiteName'] == '橋頭':
+        if uvi_data['SiteName'] == '高雄':
+            #print(uvi_data)
             return uvi_data
 
 
@@ -58,17 +59,18 @@ def display_data():
     else :
         aqi_font_color = "#670099"
 
-    UVI=uvidata['UVI']
-    if float(UVI) < 2 :
+    UVI=round(float(uvidata['UVI']),1)
+    #UVI=round(float(2),1)
+    if UVI < 2 :
         uvi_font_color = "#A7CD20"
         uvi_status="低量級"
-    elif float(UVI) < 5 :
+    elif UVI < 5 :
         uvi_font_color = "#FFA500"
         uvi_status="中量級"
-    elif float(UVI) < 7 :
+    elif UVI < 7 :
         uvi_font_color = "#F39800"
         uvi_status="高量級"
-    elif float(UVI) < 10 :
+    elif UVI < 10 :
         uvi_font_color = "#EA1904"
         uvi_status="過量級"
     else:
@@ -85,14 +87,19 @@ def display_data():
     ozone=float(aqidata['O3'])
     ozone_AVG=float(aqidata['O3_8hr'])
     ozone_delta=ozone-ozone_AVG
-
-    update_time=aqidata['ImportDate']
-    print(update_time[11:16])
+    
+    sitename=aqidata['SiteName']
+    pollutant=aqidata['Pollutant']
+    aqi_update_time=aqidata['ImportDate']
+    uvi_update_time=uvidata['PublishTime']
+    
+    #print(aqi_update_time[11:16])
+    #print(uvi_update_time[11:16])
     cola,colb=st.columns(2) 
     cola.markdown(f'<h1 style="font-family: Noto Sans TC, sans-serif;text-shadow: 2px 2px 8px #000000;font-size: 12rem;color:{aqi_font_color};text-align:center;"><strong>{AQI}</strong></h1>', unsafe_allow_html=True)
-    cola.markdown(f'<h1 style="margin-top: -1em;text-align:center;">AQI空品指數 <b>{AQI_STATUS}</b></h1>',unsafe_allow_html=True )
+    cola.markdown(f'<h1 style="font-family: Noto Sans TC, sans-serif;margin-top: -1em;text-align:center;">空氣品質AQI {AQI_STATUS}</h1>',unsafe_allow_html=True )
     colb.markdown(f'<h1 style="font-family: Noto Sans TC, sans-serif;text-shadow: 2px 2px 8px #000000;font-size: 12rem;color:{uvi_font_color};text-align:center;"><strong>{UVI}</strong></h1>', unsafe_allow_html=True)
-    colb.markdown(f'<h1 style="margin-top: -1em;text-align:center;">紫外線指數<b>{uvi_status}</b></h1>',unsafe_allow_html=True )
+    colb.markdown(f'<h1 style="font-family: Noto Sans TC, sans-serif;margin-top: -1em;text-align:center;">紫外線{uvi_status}</h1>',unsafe_allow_html=True )
     st.markdown(' --- ')
 
     col1,col2,col3,col4,col5=st.columns(5)
@@ -100,8 +107,14 @@ def display_data():
     col1.metric("PM2.5數值",value=aqidata['PM2.5'],delta=pm2_5_delta)
     col2.metric("PM10數值",value=aqidata['PM10'],delta=pm10_delta)
     col3.metric("臭氧",value=aqidata['O3'],delta=ozone_delta)
-    col4.metric("測站",value=aqidata['SiteName'])
-    col5.metric("資料更新時間",value=update_time[11:16])
+    col4.metric("AQI數據更新時間",value=aqi_update_time[11:16])
+    col5.metric("UVI數據更新時間",value=uvi_update_time[11:16])
+    
+    if pollutant:
+        col6,col7,col8=st.columns(3)
+        col6.metric("主要汙染物",pollutant)
+        col7.metric("測站位置",sitename)
+        col8.metric("",value="")
 
 #data=get_data()
 #display_data()
