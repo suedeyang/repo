@@ -31,7 +31,7 @@ def get_aqi_data():
     aqi_datas=aqi_raw_data.json()['records']#要寫成data.json()['stats']解析才會正確
     for aqi_data in aqi_datas:
         if aqi_data['SiteName'] == '左營':
-            #print(aqi_data)
+            print(aqi_data)
             return aqi_data
 def get_uvi_data():    
     uvi_raw_data=requests.get(url_UVI)
@@ -86,7 +86,7 @@ def display_data():
 
     ozone=float(aqidata['O3'])
     ozone_AVG=float(aqidata['O3_8hr'])
-    ozone_delta=ozone-ozone_AVG
+    ozone_delta=round(ozone-ozone_AVG,1)
     
     sitename=aqidata['SiteName']
     pollutant=aqidata['Pollutant']
