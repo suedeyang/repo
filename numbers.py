@@ -33,7 +33,7 @@ def get_uvi_data():
     uvi_raw_data=requests.get(url_UVI)
     uvi_datas=uvi_raw_data.json()['records']
     for uvi_data in uvi_datas:
-        if uvi_data['SiteName'] == '高雄':
+        if uvi_data['SiteName'] == '橋頭':
             #print(uvi_data)
             return uvi_data
 
