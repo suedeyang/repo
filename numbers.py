@@ -92,9 +92,9 @@ def display_data():
     #print(aqi_update_time[11:16])
     #print(uvi_update_time[11:16])
     cola,colb=st.columns(2) 
-    cola.markdown(f'<h1 style="font-family: Noto Sans TC, sans-serif;text-shadow: 2px 2px 8px #000000;font-size: 12rem;color:{aqi_font_color};text-align:center;"><strong>{AQI}</strong></h1>', unsafe_allow_html=True)
+    cola.markdown(f'<h1 style="font-family: Noto Sans TC, sans-serif;margin-top: -1em;text-shadow: 2px 2px 8px #000000;font-size: 12rem;color:{aqi_font_color};text-align:center;"><strong>{AQI}</strong></h1>', unsafe_allow_html=True)
     cola.markdown(f'<h1 style="font-family: Noto Sans TC, sans-serif;margin-top: -1em;text-align:center;">空氣品質AQI {AQI_STATUS}</h1>',unsafe_allow_html=True )
-    colb.markdown(f'<h1 style="font-family: Noto Sans TC, sans-serif;text-shadow: 2px 2px 8px #000000;font-size: 12rem;color:{uvi_font_color};text-align:center;"><strong>{UVI}</strong></h1>', unsafe_allow_html=True)
+    colb.markdown(f'<h1 style="font-family: Noto Sans TC, sans-serif;margin-top: -1em;text-shadow: 2px 2px 8px #000000;font-size: 12rem;color:{uvi_font_color};text-align:center;"><strong>{UVI}</strong></h1>', unsafe_allow_html=True)
     colb.markdown(f'<h1 style="font-family: Noto Sans TC, sans-serif;margin-top: -1em;text-align:center;">紫外線{uvi_status}</h1>',unsafe_allow_html=True )
 
 #data=get_data()

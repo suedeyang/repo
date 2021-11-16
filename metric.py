@@ -5,7 +5,7 @@ import datetime
 import time
 from streamlit.state.session_state import Value
 from streamlit_autorefresh import st_autorefresh
-
+st.set_page_config(layout="wide")
 st_autorefresh(interval=600000) # 2000 milliseconds (2 seconds)
 st.markdown("""
 
@@ -13,7 +13,7 @@ st.markdown("""
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@500&display=swap" rel="stylesheet">
 <style>
 body{
-  font-family: 'Noto Sans TC', sans-serif;
+  font-family: 'Noto Sans TC', sans-serif;margin-top: -1em;
 }
 </style>
 """, unsafe_allow_html=True)
