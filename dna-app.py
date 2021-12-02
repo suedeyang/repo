@@ -45,11 +45,16 @@ st.write('There are',str(X['T']),'thymine (T)')
 st.write('There are',str(X['G']),'guanine(G)')
 st.write('There are',str(X['C']),'cytosine(C)')
 
+
+
 st.subheader('3.Display Dataframe')
 df=pd.DataFrame.from_dict(X,orient='index')
-#df.rename({0:'count'},axis='columns')
-#df.reset_index(inplace=True)
-#df = df.rename(columns = {'index':'nucleotide'})
 df
+df.rename({0:'count'},axis='columns')
+df.reset_index(inplace=True)
+df = df.rename(columns = {'index':'nucleotide'})
+st.write(df)
+
+st.subheader('4.Display Bar Chart using Altair')
 
 
