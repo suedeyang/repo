@@ -30,9 +30,9 @@ for i in combine_list:
     i=i.replace("-","0")
     if len(i) == 4:
         i=i.replace("0","")
-        final_result_list.append(i)
+        final_result_list.append(str(i))
     else:
-        final_result_list.append(i)
+        final_result_list.append(str(i))
 
 
 selected_data=df[ (df.職稱.isin(class_1)) | (df.姓名.isin(names))| (df.姓名.isin(special_names)) ] # 過濾資料  |代表or &代表and
