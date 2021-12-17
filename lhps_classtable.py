@@ -46,5 +46,6 @@ if class_1 or names or selected_classroom or special_names:
     st.header("查詢清單")
     st.dataframe(selected_data.astype(str))
 for i in final_result_list:
-    st.image(f"http://163.16.245.102/online-portal/html/imgs/{i}.jpg")
+    #st.image(f"http://163.16.245.102/online-portal/html/imgs/{i}.jpg")
+    st.markdown(f'<img width="90%" src=http://163.16.245.102/online-portal/html/imgs/{i}.jpg>',unsafe_allow_html=True)
     st.write("---------------")
