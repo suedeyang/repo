@@ -16,10 +16,12 @@ df=df.fillna("")
 #st.write(class_1)
 st.sidebar.header("請選擇班級或科任老師(可多選)")
 class_1=st.sidebar.multiselect("班級",df.職稱.unique()[7:93],help="可一次選取多個班級")
+special_names=st.sidebar.multiselect("主任",df.姓名[1:5],help="可一次選取多位老師")
 names=st.sidebar.multiselect("科任老師",df.姓名[118:176],help="可一次選取多位老師")
+st.sidebar.write("教室功能做到一半還沒完全弄好")
 select_classroom = st.sidebar.multiselect("專科教室", classrooms ,help="可一次選取多間教室")
 
-combine_list=class_1+names+select_classroom
+combine_list=class_1+names+select_classroom+special_names
 #st.write(combine_list)
 
 
@@ -33,9 +35,9 @@ for i in combine_list:
         final_result_list.append(i)
 
 
-selected_data=df[ (df.職稱.isin(class_1)) | (df.姓名.isin(names)) ] # 過濾資料  |代表or &代表and
+selected_data=df[ (df.職稱.isin(class_1)) | (df.姓名.isin(names))| (df.姓名.isin(special_names)) ] # 過濾資料  |代表or &代表and
 
-if class_1 or names or selected_classroom:
+if class_1 or names or selected_classroom or special_names:
     #selected_data=df[ (df.職稱.isin(class_1))]
     st.markdown("""
     * [龍華國小教職員工連結](http://school.kh.edu.tw/view/index.php?WebID=180&MainType=103&SubType=0&MainMenuId=69026&SubMenuId=0&NowMainId=69026&NowSubId=0)
