@@ -1,5 +1,3 @@
-from os import name
-from pandas.io.html import read_html
 import streamlit as st
 import pandas as pd
 
