@@ -1,5 +1,7 @@
 import streamlit as st
 import pandas as pd
+from PIL import Image
+import requests
 
 classrooms=["自然教室1","自然教室2","自然教室3","自然教室4","自然教室5","自然教室6","自然教室7","電腦教室1","電腦教室2","電腦教室3","語言教室1","語言教室2","表演藝術教室","音樂教室2","協同教室"]
 selected_classroom=[]
@@ -10,7 +12,9 @@ df.drop(['NO.'],axis=1)
 df=df.fillna("")
 #st.dataframe(df.astype(str))
 
-st.image("http://163.16.245.102/online-portal/html/imgs/101.jpg")
+img=Image.open(requests.get("http://163.16.245.102/online-portal/html/imgs/101.jpg",stream=True).raw)
+st.image(img)
+st.image("https://163.16.245.102/online-portal/html/imgs/101.jpg")
 st.image("https://s3-us-west-2.amazonaws.com/uw-s3-cdn/wp-content/uploads/sites/6/2017/11/04133712/waterfall.jpg",width=400)
 
 #st.write(class_1)
