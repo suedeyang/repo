@@ -12,10 +12,6 @@ df.drop(['NO.'],axis=1)
 df=df.fillna("")
 #st.dataframe(df.astype(str))
 
-img=Image.open(requests.get("http://163.16.245.102/online-portal/html/imgs/101.jpg",stream=True).raw)
-st.image(img)
-st.image("https://163.16.245.102/online-portal/html/imgs/101.jpg")
-st.image("https://s3-us-west-2.amazonaws.com/uw-s3-cdn/wp-content/uploads/sites/6/2017/11/04133712/waterfall.jpg",width=400)
 
 #st.write(class_1)
 st.sidebar.header("請選擇班級或科任老師(可多選)")
@@ -51,5 +47,10 @@ if class_1 or names or selected_classroom or special_names:
     st.dataframe(selected_data.astype(str))
 for i in final_result_list:
     #st.image(f"http://163.16.245.102/online-portal/html/imgs/{i}.jpg")
-    st.markdown(f'<img width="90%" src=http://163.16.245.102/online-portal/html/imgs/{i}.jpg>',unsafe_allow_html=True)
+    img=Image.open(requests.get(f"http://163.16.245.102/online-portal/html/imgs/{i}.jpg",stream=True).raw)
+    st.image(img)
+    #st.markdown(f'<img width="90%" src=http://163.16.245.102/online-portal/html/imgs/{i}.jpg>',unsafe_allow_html=True)
     st.write("---------------")
+
+
+
