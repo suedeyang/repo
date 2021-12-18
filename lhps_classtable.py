@@ -20,9 +20,10 @@ names=st.sidebar.multiselect("科任老師",df.姓名[118:176],help="可一次�
 select_classroom = st.sidebar.multiselect("專科教室", classrooms ,help="可一次選取多間教室")
 combine_list=class_1+names+select_classroom+special_names
 #st.write(combine_list)
-
-@st.cache
 final_result_list=[]
+
+
+
 for i in combine_list:
     i=i.replace("-","0")
     if len(i) == 4:
