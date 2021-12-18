@@ -10,7 +10,7 @@ df.drop(['NO.'],axis=1)
 df=df.fillna("")
 #st.dataframe(df.astype(str))
 
-
+st.image(http://163.16.245.102/online-portal/html/imgs/101.jpg)
 
 
 #st.write(class_1)
