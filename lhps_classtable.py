@@ -12,6 +12,7 @@ df.drop(['NO.'],axis=1)
 df=df.fillna("")
 #st.dataframe(df.astype(str))
 
+
 #st.write(class_1)
 st.sidebar.header("請選擇班級或科任老師(可多選)")
 class_1=st.sidebar.multiselect("班級",df.職稱.unique()[7:93],help="可一次選取多個班級")
@@ -38,11 +39,15 @@ selected_data=df[ (df.職稱.isin(class_1)) | (df.姓名.isin(names))| (df.姓�
 if class_1 or names or selected_classroom or special_names:
     #selected_data=df[ (df.職稱.isin(class_1))]
     st.markdown("""
-    * [龍華國小教職員工連結](http://school.kh.edu.tw/view/index.php?WebID=180&MainType=103&SubType=0&MainMenuId=69026&SubMenuId=0&NowMainId=69026&NowSubId=0)
-    * [場地預約系統](http://rnb.kh.edu.tw/booking/schedule_view.jsp?s=523606)
+    * [**龍華國小教職員工**](http://school.kh.edu.tw/view/index.php?WebID=180&MainType=103&SubType=0&MainMenuId=69026&SubMenuId=0&NowMainId=69026&NowSubId=0)
+    * [**場地預約系統**](http://rnb.kh.edu.tw/booking/schedule_view.jsp?s=523606)
+    * [**龍華國小行事曆**](https://calendar.google.com/calendar/u/0/embed?src=0jpbrq0murj8pmbkfq13ekc12o@group.calendar.google.com&ctz=Asia/Taipei)
     """)
     st.header("查詢清單")
     st.dataframe(selected_data.astype(str))
+else:
+    st.caption("點選左上角的 > 開始查詢課表")
+
 for i in final_result_list:
     #st.image(f"http://163.16.245.102/online-portal/html/imgs/{i}.jpg")
     img=Image.open(requests.get(f"http://163.16.245.102/online-portal/html/imgs/{i}.jpg",stream=True).raw)
