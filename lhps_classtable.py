@@ -28,7 +28,7 @@ final_result_list=[]
 for i in combine_list:
     i=i.replace("-","0")
     if len(i) == 4:
-        i=i.replace("0","")
+        i=i.replace("0","",1)
         final_result_list.append(str(i))
     else:
         final_result_list.append(str(i))
