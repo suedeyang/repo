@@ -11,7 +11,7 @@ df=df.fillna("")
 #st.dataframe(df.astype(str))
 
 st.image("http://163.16.245.102/online-portal/html/imgs/101.jpg")
-
+st.image("https://s3-us-west-2.amazonaws.com/uw-s3-cdn/wp-content/uploads/sites/6/2017/11/04133712/waterfall.jpg",width=400)
 
 #st.write(class_1)
 st.sidebar.header("請選擇班級或科任老師(可多選)")
