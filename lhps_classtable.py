@@ -12,7 +12,7 @@ df.drop(['NO.'],axis=1)
 df=df.fillna("")
 #st.dataframe(df.astype(str))
 
-
+@st.cache
 #st.write(class_1)
 st.sidebar.header("請選擇班級或科任老師(可多選)")
 class_1=st.sidebar.multiselect("班級",df.職稱.unique()[7:93],help="可一次選取多個班級")
