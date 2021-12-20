@@ -47,6 +47,7 @@ if class_1 or names or selected_classroom or special_names:
     st.dataframe(selected_data.astype(str))
 else:
     st.caption("點選左上角的 > 開始查詢課表")
+    st.header("damn..資教中心主機當機ing...系統目前無法使用")
 
 for i in final_result_list:
     #st.image(f"http://163.16.245.102/online-portal/html/imgs/{i}.jpg")
