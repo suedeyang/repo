@@ -47,14 +47,10 @@ if class_1 or names or selected_classroom or special_names:
     st.dataframe(selected_data.astype(str))
 else:
     st.caption("點選左上角的 > 開始查詢課表")
-    st.header("damn..資教中心主機當機ing...系統目前無法使用")
 
 for i in final_result_list:
-    #st.image(f"http://163.16.245.102/online-portal/html/imgs/{i}.jpg")
-    img=Image.open(requests.get(f"http://163.16.245.102/online-portal/html/imgs/{i}.jpg",stream=True).raw)
-    st.image(img)
+    st.image(f'https://raw.githubusercontent.com/suedeyang/img/main/{i}.jpg')
+    #img=Image.open(requests.get(f"http://163.16.245.102/online-portal/html/imgs/{i}.jpg",stream=True).raw)
+    #st.image(img)
     #st.markdown(f'<img width="90%" src=http://163.16.245.102/online-portal/html/imgs/{i}.jpg>',unsafe_allow_html=True)
-    st.write("---------------")
-
-
-
+    #st.write("---------------")
