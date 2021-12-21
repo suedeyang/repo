@@ -3,6 +3,7 @@ import pandas as pd
 from PIL import Image
 import requests
 
+
 classrooms=["自然教室1","自然教室2","自然教室3","自然教室4","自然教室5","自然教室6","自然教室7","蝴蝶園教室","電腦教室1","電腦教室2","電腦教室3","語言教室1","語言教室2","表演藝術教室","音樂教室2","協同教室","美勞教室1","美勞教室2","美勞教室3"]
 selected_classroom=[]
 url="http://school.kh.edu.tw/view/index.php?WebID=180&MainType=103&SubType=0&MainMenuId=69026&SubMenuId=0&NowMainId=69026&NowSubId=0"
@@ -49,11 +50,9 @@ else:
     st.caption("點選左上角的 > 開始查詢課表")
 
 for i in final_result_list:
-    #st.image(f"http://163.16.245.102/online-portal/html/imgs/{i}.jpg")
-    img=Image.open(requests.get(f"http://163.16.245.102/online-portal/html/imgs/{i}.jpg",stream=True).raw)
-    st.image(img)
+    #st.image(f'https://raw.githubusercontent.com/suedeyang/img/main/{i}.jpg')
+    st.image(f'https://www2.lhps.kh.edu.tw/online-portal/html/imgs/{i}.jpg')
+    #img=Image.open(requests.get(f"http://163.16.245.102/online-portal/html/imgs/{i}.jpg",stream=True).raw)
+    #st.image(img)
     #st.markdown(f'<img width="90%" src=http://163.16.245.102/online-portal/html/imgs/{i}.jpg>',unsafe_allow_html=True)
-    st.write("---------------")
-
-
-
+    #st.write("---------------")
