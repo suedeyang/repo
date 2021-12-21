@@ -90,7 +90,7 @@ def display_data():
     ##print(aqi_update_time[11:16])
     #print(uvi_update_time[11:16])
     #cola,colb=st.columns(2) 
-    st.markdown(f'<h1 style="margin-top: -40px;font-family: Noto Sans TC, sans-serif;font-size: 3rem;text-align:center;"><strong>AQI空氣指數</h1>', unsafe_allow_html=True)
+    st.markdown(f'<h1 style="font-family: Noto Sans TC, sans-serif;font-size: 3rem;text-align:center;"><strong>AQI空氣指數</h1>', unsafe_allow_html=True)
     st.markdown(f'<h1 style="margin:-20px 0px 10px 0;font-family: Noto Sans TC, sans-serif;text-shadow: 2px 2px 8px #000000;font-size: 8rem;color:{aqi_font_color};text-align:center;"><strong>{AQI}</strong></h1>', unsafe_allow_html=True)
     st.markdown("----")
     st.markdown(f'<h1 style="font-family: Noto Sans TC, sans-serif;font-size: 3rem;text-align:center;"><strong>紫外線指數</h1>', unsafe_allow_html=True)
