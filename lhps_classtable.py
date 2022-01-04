@@ -2,6 +2,8 @@ import streamlit as st
 import pandas as pd
 from PIL import Image
 import requests
+import streamlit.components.v1 as components
+
 
 
 classrooms=["自然教室1","自然教室2","自然教室3","自然教室4","自然教室5","自然教室6","自然教室7","蝴蝶園教室","電腦教室1","電腦教室2","電腦教室3","語言教室1","語言教室2","表演藝術教室","音樂教室2","協同教室","美勞教室1","美勞教室2","美勞教室3"]
@@ -56,3 +58,9 @@ for i in final_result_list:
     #st.image(img)
     #st.markdown(f'<img width="90%" src=http://163.16.245.102/online-portal/html/imgs/{i}.jpg>',unsafe_allow_html=True)
     #st.write("---------------")
+
+components.html(
+    """
+    <a href="https://www.freecounterstat.com" title="website hit counter"><img src="https://counter7.stat.ovh/private/freecounterstat.php?c=1xxbkaede12twl3y6j9xfydj5w3bkw35" border="0" title="website hit counter" alt="website hit counter"></a>
+    """
+)
