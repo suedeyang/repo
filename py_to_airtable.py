@@ -13,8 +13,6 @@ https://airtable.com/account
 
 '''
 
-
-
 import requests
 #The ID of this base is appdbFYpupPu5iPPc.
 KEY=""
@@ -35,7 +33,7 @@ def add_to_airtable(ID=None,places=""):
             {
             "fields": {
                 "ID": ID ,
-                "places": places
+                "injured_area": places
                 }
             }
         ]
