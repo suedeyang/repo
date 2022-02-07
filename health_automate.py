@@ -1,15 +1,18 @@
-from urllib import response
 import streamlit as st
 import streamlit.components.v1 as components
 import requests
 import pyautogui
 import time
 
+fp=open("db.txt",'r')
+stu_list=fp.readlines()
+
+
 #The ID of this base is appdbFYpupPu5iPPc.
 KEY=""
 endpoint='https://api.airtable.com/v0/appdbFYpupPu5iPPc/harm-data'
 
-def add_to_airtable(basic_data,injured_part_result,trauma_result,Internal_Medicine_result,treat_method_result):
+def add_to_airtable(basic_data,injured_part_result,trauma_result,Internal_Medicine_result,treat_method_result,body_temperature,obseravtion_time,get_hurt_places):
     #Python requests headers
     headers={
         "Authorization": f'Bearer {KEY}', #注意前面的,
@@ -25,6 +28,9 @@ def add_to_airtable(basic_data,injured_part_result,trauma_result,Internal_Medici
                 "trauma": trauma_result,
                 "Internal_Medicine":Internal_Medicine_result,
                 "treat_method":treat_method_result,
+                "get_hurt_places":get_hurt_places,
+                "obseravtion_time":obseravtion_time,
+                "body_temperature":body_temperature,
                 }
             }
         ]
@@ -45,66 +51,80 @@ st.sidebar.title("1.填寫基本資料")
 grade=st.sidebar.selectbox('年級',range(0,7))
 classes=st.sidebar.selectbox('班級',range(0,16))
 numbers=st.sidebar.selectbox('座號',range(0,35))
+#body_temperature = None
+#obseravtion_time=None
+#get_hurt_places=None
 basic_data=str(grade)+str(classes).zfill(2)+str(numbers).zfill(2)
 
 
+body_temperature=[]
+obseravtion_time=[]
+get_hurt_places=[]
 with st.sidebar.expander("補充資料"):
     #colx,coly,colz=st.columns(3)
     if st.checkbox("記錄體溫"):
-       body_temperature=st.slider("體溫",34.0,40.0,36.0,0.1)
+       body_temperature.append(st.slider("體溫",34.0,40.0,36.0,0.1))
     if st.checkbox("紀錄休息觀察時間"):
-       obseravtion_time=st.selectbox("休息觀察時間",range(0,240,5),index=0)
-    if st.checkbox("紀錄受傷地點"):
-       get_hurt_places=st.selectbox("受傷地點",injured_places)
+       obseravtion_time.append(st.selectbox("休息觀察時間",rest_time))
+    if st.checkbox("紀錄受傷地點"):       
+       get_hurt_places.append(st.selectbox("受傷地點",injured_places))
+    
 
 if grade == 0 or classes == 0 or numbers == 0:
-    st.sidebar.error("請先輸入正確的基本資料")
+    st.sidebar.error("輸入班級、姓名、座號")
     st.image("https://pic.pimg.tw/c41666/1560907397-2167670633_n.png",caption='身體部位圖')
 if not grade == 0 and not classes == 0 and not numbers == 0:
-    st.write(grade,"年",classes,"班",numbers,"號 小朋友開始登記資料")
+    if basic_data+"\n" in stu_list:
+        st.sidebar.success("資料驗證正確")
+        st.write(grade,"年",classes,"班",numbers,"號 小朋友開始登記受傷資料")
+        fp.close()
+    
+        st.header("受傷部位")
+        injured_area = st.multiselect('',injured_part)
+        injured_part_result=[] #受傷部位結果之串列
+        for i in injured_area:
+            selected_number=injured_part.index(i)
+            injured_part_result.append(selected_number)
 
-    st.header("受傷部位")
-    injured_area = st.multiselect('',injured_part)
-    injured_part_result=[] #受傷部位結果之串列
-    for i in injured_area:
-        selected_number=injured_part.index(i)
-        injured_part_result.append(selected_number)
+        st.write('------------')
+        st.header("外傷")
+        trauma = st.multiselect('',trauma_type)
+        trauma_result=[]
+        for i in trauma:
+            selected_number=trauma_type.index(i)
+            trauma_result.append(selected_number)
 
-    st.write('------------')
-    st.header("外傷")
-    trauma = st.multiselect('',trauma_type)
-    trauma_result=[]
-    for i in trauma:
-        selected_number=trauma_type.index(i)
-        trauma_result.append(selected_number)
+        st.write('------------')
+        st.header("內科")
+        Internal_Medicine = st.multiselect('',Internal_Medicine_type)
+        Internal_Medicine_result=[]
+        for i in Internal_Medicine:
+            selected_number=Internal_Medicine_type.index(i)
+            Internal_Medicine_result.append(selected_number)
 
-    st.write('------------')
-    st.header("內科")
-    Internal_Medicine = st.multiselect('',Internal_Medicine_type)
-    Internal_Medicine_result=[]
-    for i in Internal_Medicine:
-        selected_number=Internal_Medicine_type.index(i)
-        Internal_Medicine_result.append(selected_number)
-
-    st.write('------------')
-    st.header("處置作為")
-    treat_method_choice = st.multiselect('',treat_method)
-    treat_method_result=[]
-    for i in treat_method_choice:
-        selected_number=treat_method.index(i)
-        treat_method_result.append(selected_number)
-    if not injured_part_result  and not trauma_result and not Internal_Medicine_result and not treat_method_result:
-        st.error("請輸入資料")    
+        st.write('------------')
+        st.header("處置作為")
+        treat_method_choice = st.multiselect('',treat_method)
+        treat_method_result=[]
+        for i in treat_method_choice:
+            selected_number=treat_method.index(i)
+            treat_method_result.append(selected_number)
+        
+        st.write("-------")
+        if not injured_part_result  and not trauma_result and not Internal_Medicine_result and not treat_method_result:
+            st.error("請輸入資料")    
+        else:
+            if st.button(basic_data+"  輸入完畢 提交資料"):
+                x=add_to_airtable(basic_data,str(injured_part_result),str(trauma_result),str(Internal_Medicine_result),str(treat_method_result),str(body_temperature),str(obseravtion_time),str(get_hurt_places))
+                #st.write("資料寫入中")
+                if x > 300:
+                    st.error("資料寫入失敗，清除資料重新登記")
+                    time.sleep(3)
+                    pyautogui.hotkey("ctrl","F5")
+                else:
+                    st.success("資料寫入成功!!")
+                    st.balloons()
+                    time.sleep(1)
+                    pyautogui.hotkey("ctrl","F5")
     else:
-        if st.button(basic_data+"  輸入完畢 提交資料"):
-            x=add_to_airtable(basic_data,str(injured_part_result),str(trauma_result),str(Internal_Medicine_result),str(treat_method_result))
-            #st.write("資料寫入中")
-            if x > 300:
-                st.error("資料寫入失敗，清除資料重新登記")
-                time.sleep(3)
-                pyautogui.hotkey("ctrl","F5")
-            else:
-                st.success("資料寫入成功!!")
-                st.balloons()
-                time.sleep(2)
-                pyautogui.hotkey("ctrl","F5")
+        st.sidebar.error("龍華國小沒這位小朋友喔")

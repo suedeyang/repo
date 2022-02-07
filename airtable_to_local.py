@@ -17,11 +17,14 @@ import datetime
 from airtable import Airtable
 #The ID of this base is appdbFYpupPu5iPPc.
 base_key='appdbFYpupPu5iPPc' #USERID
-api_key=""
+api_key="keyLUIWnguO4OZcmu"
 table_name = 'harm-data'
 airtable = Airtable(base_key,table_name,api_key)
 #pages=airtable.get_iter()
+#obseravtion_time=None
 pages=airtable.get_all()
+
+print(len(pages)) #共有幾筆資料要登載
 
 def transform_str_to_string(input_str):
     final_list=[]
@@ -34,12 +37,13 @@ def transform_str_to_string(input_str):
     return final_list
 
 for page in pages:
-    print(page)
+    #print(page)
     stu_ID=page['fields']['ID']
     print(stu_ID)
     #受傷部位 chkPart_0 ~ chkPart_14
     chkPart=transform_str_to_string(page['fields']['injured_area'])
     print(chkPart)
+    #print(type(chkPart))
     #外傷 chkState_0 ~ chkState_9
     chkState=transform_str_to_string(page['fields']['trauma'])
     print(chkState)
@@ -54,6 +58,16 @@ for page in pages:
     print(created_date_time)
     #print(created_date_time[0:4])
     
+    #體溫(補充資料)
+    body_temperature=page['fields']['body_temperature'].strip("[]")
+    print(body_temperature) 
+    #print(type(body_temperature))
+    #受傷地點
+    get_hurt_places=page['fields']['get_hurt_places'].strip("[]'")
+    print(get_hurt_places)
+    #觀察時間
+    obseravtion_time=page['fields']['obseravtion_time'].strip("[]")
+    print(obseravtion_time)
     print("NEXT")
 #    for record in page:
 #        print(record['fields']['Internal_Medicine'])
