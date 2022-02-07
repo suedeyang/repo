@@ -60,7 +60,7 @@ basic_data=str(grade)+str(classes).zfill(2)+str(numbers).zfill(2)
 body_temperature=[]
 obseravtion_time=[]
 get_hurt_places=[]
-with st.sidebar.expander("補充資料"):
+with st.sidebar.expander("補充資料(體溫、時間、地點)"):
     #colx,coly,colz=st.columns(3)
     if st.checkbox("記錄體溫"):
        body_temperature.append(st.slider("體溫",34.0,40.0,36.0,0.1))
