@@ -17,7 +17,7 @@ import datetime
 from airtable import Airtable
 #The ID of this base is appdbFYpupPu5iPPc.
 base_key='appdbFYpupPu5iPPc' #USERID
-api_key="keyLUIWnguO4OZcmu"
+api_key=""
 table_name = 'harm-data'
 airtable = Airtable(base_key,table_name,api_key)
 #pages=airtable.get_iter()

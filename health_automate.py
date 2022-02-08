@@ -3,10 +3,30 @@ import streamlit.components.v1 as components
 import requests
 import pyautogui
 import time
+#from streamlit_autorefresh import st_autorefresh
+
+reload_html_string = '''
+<head>
+        <meta http-equiv="refresh" content="3" />
+</head>
+'''
+pre_html_code='''
+<!doctype html>
+<html>
+<head>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossorigin="anonymous">
+</head>
+<body>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.1/dist/umd/popper.min.js" integrity="sha384-W8fXfP3gkOKtndU4JGtKDvXbO53Wy8SZCQHczT5FMiiqmQfUpWbYdTil/SxwZgAN" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.min.js" integrity="sha384-skAcpIdS7UcVUC05LJ9Dxay8AXcDYfBJqt1CJ85S/CFujBsIzCIv+l9liuYLaMQ/" crossorigin="anonymous"></script>
+</body>
+'''
+
+#st.markdown(pre_html_code,unsafe_allow_html=True)
 
 fp=open("db.txt",'r')
 stu_list=fp.readlines()
-
+#html="<script>location.reload();</script>"
 
 #The ID of this base is appdbFYpupPu5iPPc.
 KEY=""
@@ -39,6 +59,7 @@ def add_to_airtable(basic_data,injured_part_result,trauma_result,Internal_Medici
     print(r.status_code) #HTTP status code
     return r.status_code
 
+
 injured_part=['頭','頸','肩','胸','腹','背','眼','顏面','口腔','耳鼻喉','上肢','腰','下肢','臀部','會陰部']
 trauma_type=['擦傷','割裂刺傷','壓夾傷','挫創傷','扭傷','灼燙傷','叮咬傷','骨折','舊傷','外科其它']
 Internal_Medicine_type=['發燒','暈眩','噁心嘔吐','頭痛','牙痛','胃痛','腹痛','腹瀉','經痛','氣喘','流鼻血','疹癢','眼疾','內科其它']
@@ -60,6 +81,7 @@ basic_data=str(grade)+str(classes).zfill(2)+str(numbers).zfill(2)
 body_temperature=[]
 obseravtion_time=[]
 get_hurt_places=[]
+
 with st.sidebar.expander("補充資料(體溫、時間、地點)"):
     #colx,coly,colz=st.columns(3)
     if st.checkbox("記錄體溫"):
@@ -76,7 +98,9 @@ if grade == 0 or classes == 0 or numbers == 0:
 if not grade == 0 and not classes == 0 and not numbers == 0:
     if basic_data+"\n" in stu_list:
         st.sidebar.success("資料驗證正確")
-        st.write(grade,"年",classes,"班",numbers,"號 小朋友開始登記受傷資料")
+        html_string = f"<h2>{grade}年{classes}班{numbers}號 小朋友開始登記傷病資料</h>"
+        st.markdown(html_string, unsafe_allow_html=True)
+        #st.write(grade,"年",classes,"班",numbers,"號 小朋友開始登記受傷資料")
         fp.close()
     
         st.header("受傷部位")
@@ -119,12 +143,18 @@ if not grade == 0 and not classes == 0 and not numbers == 0:
                 #st.write("資料寫入中")
                 if x > 300:
                     st.error("資料寫入失敗，清除資料重新登記")
-                    time.sleep(3)
-                    pyautogui.hotkey("ctrl","F5")
+                    #time.sleep(3)
+                    #pyautogui.hotkey("ctrl","F5")
+                    st.markdown(reload_html_string, unsafe_allow_html=True)
                 else:
                     st.success("資料寫入成功!!")
                     st.balloons()
-                    time.sleep(1)
-                    pyautogui.hotkey("ctrl","F5")
+                    #time.sleep(2)
+                    #pyautogui.hotkey("ctrl","F5")
+                    st.markdown(reload_html_string, unsafe_allow_html=True)
+                    
+                    
     else:
         st.sidebar.error("龍華國小沒這位小朋友喔")
+
+
