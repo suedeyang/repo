@@ -1,9 +1,17 @@
 import streamlit as st
-import streamlit.components.v1 as components
+#import streamlit.components.v1 as components
 import requests
-import pyautogui
+#import pyautogui
 import time
 #from streamlit_autorefresh import st_autorefresh
+
+st.set_page_config(
+	    layout="centered",  # Can be "centered" or "wide". In the future also "dashboard", etc.
+	    initial_sidebar_state="auto",  # Can be "auto", "expanded", "collapsed"
+	    page_title="龍華國小傷病登記系統",  # String or None. Strings get appended with "• Streamlit". 
+	    page_icon=None,  # String, anything supported by st.image, or None.
+        )
+
 
 reload_html_string = '''
 <head>
@@ -21,12 +29,31 @@ pre_html_code='''
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.min.js" integrity="sha384-skAcpIdS7UcVUC05LJ9Dxay8AXcDYfBJqt1CJ85S/CFujBsIzCIv+l9liuYLaMQ/" crossorigin="anonymous"></script>
 </body>
 '''
-
 #st.markdown(pre_html_code,unsafe_allow_html=True)
+
+
+button_color_code='''
+<style>
+div.stButton > button:first-child {
+    background-color: #0048ff;
+    color:#ffffff;
+    font-weight:bold;
+}
+div.stButton > button:hover {
+    background-color: #ffffff;
+    color:#0048ff;
+    font-weight:bold;
+    }
+</style>
+'''
+st.markdown(button_color_code, unsafe_allow_html=True)
+
+
+
+
 
 fp=open("db.txt",'r')
 stu_list=fp.readlines()
-#html="<script>location.reload();</script>"
 
 #The ID of this base is appdbFYpupPu5iPPc.
 KEY=""
@@ -70,7 +97,7 @@ rest_time=[5,10,15,20,25,30,45,60,75,90,120,150,180,240,300,360,420,480,540,600]
 #st.sidebar.title("龍華國小傷病管理系統")
 st.sidebar.title("1.填寫基本資料")
 grade=st.sidebar.selectbox('年級',range(0,7))
-classes=st.sidebar.selectbox('班級',range(0,16))
+classes=st.sidebar.selectbox('班級',range(0,18))
 numbers=st.sidebar.selectbox('座號',range(0,35))
 #body_temperature = None
 #obseravtion_time=None
@@ -93,16 +120,18 @@ with st.sidebar.expander("補充資料(體溫、時間、地點)"):
     
 
 if grade == 0 or classes == 0 or numbers == 0:
-    st.sidebar.error("輸入班級、姓名、座號")
+    st.error("先在左邊 輸入班級、姓名、座號")
     st.image("https://pic.pimg.tw/c41666/1560907397-2167670633_n.png",caption='身體部位圖')
 if not grade == 0 and not classes == 0 and not numbers == 0:
     if basic_data+"\n" in stu_list:
-        st.sidebar.success("資料驗證正確")
-        html_string = f"<h2>{grade}年{classes}班{numbers}號 小朋友開始登記傷病資料</h>"
-        st.markdown(html_string, unsafe_allow_html=True)
+        messages=f"{grade}年{classes}班{numbers}號 資料驗證正確，登記完傷病資料請按藍色按鈕送出"
+        st.success(messages)    
+        #html_string = f"<h2>{grade}年{classes}班{numbers}號 小朋友開始登記傷病資料</h>"
+        #st.markdown(html_string, unsafe_allow_html=True)
         #st.write(grade,"年",classes,"班",numbers,"號 小朋友開始登記受傷資料")
         fp.close()
-    
+
+
         st.header("受傷部位")
         injured_area = st.multiselect('',injured_part)
         injured_part_result=[] #受傷部位結果之串列
@@ -136,13 +165,14 @@ if not grade == 0 and not classes == 0 and not numbers == 0:
         
         st.write("-------")
         if not injured_part_result  and not trauma_result and not Internal_Medicine_result and not treat_method_result:
-            st.error("請輸入傷病資料")    
+            #st.error("請輸入傷病資料")    
+            st.empty()
         else:
-            if st.button(basic_data+"  輸入完畢 提交資料"):
+            if st.button(basic_data+"  輸入完畢 送出資料"):
                 x=add_to_airtable(basic_data,str(injured_part_result),str(trauma_result),str(Internal_Medicine_result),str(treat_method_result),str(body_temperature),str(obseravtion_time),str(get_hurt_places))
                 #st.write("資料寫入中")
                 if x > 300:
-                    st.error("資料寫入失敗，清除資料重新登記")
+                    st.error("資料寫入失敗，網路部份出了問題，清除資料重新登記")
                     #time.sleep(3)
                     #pyautogui.hotkey("ctrl","F5")
                     st.markdown(reload_html_string, unsafe_allow_html=True)
@@ -155,6 +185,8 @@ if not grade == 0 and not classes == 0 and not numbers == 0:
                     
                     
     else:
-        st.sidebar.error("龍華國小沒這位小朋友喔")
+        messages=f"龍華國小沒有{grade}年{classes}班{numbers}號 這位小朋友喔!!"
+        st.error(messages)
+        
 
 
