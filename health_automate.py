@@ -136,7 +136,7 @@ if not grade == 0 and not classes == 0 and not numbers == 0:
         
         st.write("-------")
         if not injured_part_result  and not trauma_result and not Internal_Medicine_result and not treat_method_result:
-            st.error("請輸入資料")    
+            st.error("請輸入傷病資料")    
         else:
             if st.button(basic_data+"  輸入完畢 提交資料"):
                 x=add_to_airtable(basic_data,str(injured_part_result),str(trauma_result),str(Internal_Medicine_result),str(treat_method_result),str(body_temperature),str(obseravtion_time),str(get_hurt_places))
