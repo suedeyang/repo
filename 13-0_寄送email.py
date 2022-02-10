@@ -1,11 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Sat Mar 14 22:05:24 2020
-
-@author: suedeyang
-"""
-
-
 import smtplib
 from email.mime.text import MIMEText
 
@@ -22,13 +14,10 @@ def send_gmail(gmail_addr,gmail_pwd,to_addrs,msg):
         print('寄信失敗')
     smtp_gmail.quit()
 
-def 
-
-
 
 gmail_addr=''
 gmail_pwd=''
-to_addrs=['','']
+to_addrs=['']
 
 mime_text=MIMEText('收信愉快','plain','utf-8')
 mime_text['Subject']='你好'

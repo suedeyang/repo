@@ -2,6 +2,9 @@ import streamlit as st
 import requests
 #import pyautogui
 import time
+import smtplib
+from email.mime.text import MIMEText
+import pandas as pd
 
 st.set_page_config(
 	    layout="centered",  # Can be "centered" or "wide". In the future also "dashboard", etc.
@@ -54,9 +57,63 @@ fp=open("db.txt",'r')
 stu_list=fp.readlines()
 
 #The ID of this base is appdbFYpupPu5iPPc.
-KEY=""
+KEY="keyLUIWnguO4OZcmu"
 endpoint='https://api.airtable.com/v0/appdbFYpupPu5iPPc/harm-data'
 endpoint2='https://api.airtable.com/v0/appdbFYpupPu5iPPc/harm-data-history'
+
+
+#找出老師的電子郵件信箱
+def find_class_teachers(classes_of_student):
+    url="http://school.kh.edu.tw/view/index.php?WebID=180&MainType=103&SubType=0&MainMenuId=69026&SubMenuId=0&NowMainId=69026&NowSubId=0"
+    html=pd.read_html(url,header=0)
+    df=html[0]
+    df.drop(['NO.'],axis=1)
+    df=df.fillna("")
+    final_class_result_list=[]
+    
+    classes=list(df.職稱)
+    for i in classes:
+        i=i.replace("-","0")
+        if len(i) == 4:
+            i=i.replace("0","",1)
+            final_class_result_list.append(str(i))
+        else:
+            final_class_result_list.append(str(i))
+    
+    index_number=final_class_result_list.index(classes_of_student)
+    return df.Email[index_number],df.姓名[index_number]
+
+
+
+#寄送班級導師電子郵件
+def send_gmail(basic_data,teachers_email,teachers_name,pre_get_hurt_places,injured_area):
+    gmail_addr='suedeyang@mail.lhps.kh.edu.tw'
+    gmail_pwd=''
+    email_msg=f'{teachers_name}老師您好：\n貴班{basic_data}小朋友於健康中心登記傷病，特此通知，登載資料如下：\n受傷部位：{injured_area}\n受傷地點：{pre_get_hurt_places}'
+    mime_text=MIMEText(email_msg,'plain','utf-8')
+    mime_text['Subject']=f'{basic_data}傷病資料'
+    mime_text['From']='龍華國小健康中心'
+    mime_text['to']=f'{basic_data}班級老師{teachers_name}'
+    #mime_text['Cc']='副本收件者'
+    mime_text=mime_text.as_string() #送出之前要先轉換為字串
+    #send_gmail(gmail_addr,gmail_pwd,to_addrs,mime_text) #注意msg的格式
+    
+    smtp_gmail=smtplib.SMTP('smtp.gmail.com',587) #587為ttl的port
+    smtp_gmail.ehlo() #打招呼說hello
+    smtp_gmail.starttls()
+    smtp_gmail.login(gmail_addr,gmail_pwd) #https://myaccount.google.com/lesssecureapps 低安全性登入要打開
+    status=smtp_gmail.sendmail(gmail_addr,teachers_email,mime_text)
+    if not status:  #因為成功的話 回傳的dic會是空的
+        st.write("寄信成功")
+    else:
+        st.write('寄信失敗')
+    smtp_gmail.quit()
+
+
+
+
+
+
 def add_to_airtable(basic_data,injured_part_result,trauma_result,Internal_Medicine_result,treat_method_result,body_temperature,obseravtion_time,get_hurt_places):
     #Python requests headers
     headers={
@@ -106,7 +163,7 @@ numbers=st.sidebar.selectbox('座號',range(0,36))
 #obseravtion_time=None
 #get_hurt_places=None
 basic_data=str(grade)+str(classes).zfill(2)+str(numbers).zfill(2)
-
+classes_of_student=str(grade)+str(classes).zfill(2)
 
 body_temperature=[]
 obseravtion_time=0
@@ -129,6 +186,9 @@ if not grade == 0 and not classes == 0 and not numbers == 0:
     if basic_data+"\n" in stu_list:
         messages=f"{grade}年{classes}班{numbers}號 資料驗證正確，登記完傷病資料請按藍色按鈕送出"
         st.success(messages)    
+        #teachers_email,teachers_name=find_class_teachers(classes_of_student)
+        #st.write(teachers_email,teachers_name)
+        
         #html_string = f"<h2>{grade}年{classes}班{numbers}號 小朋友開始登記傷病資料</h>"
         #st.markdown(html_string, unsafe_allow_html=True)
         #st.write(grade,"年",classes,"班",numbers,"號 小朋友開始登記受傷資料")
@@ -186,6 +246,8 @@ if not grade == 0 and not classes == 0 and not numbers == 0:
                     st.markdown(reload_html_string, unsafe_allow_html=True)
                 else:
                     st.success("資料寫入成功!!")
+                    teachers_email,teachers_name=find_class_teachers(classes_of_student)
+                    send_gmail(basic_data,teachers_email,teachers_name,pre_get_hurt_places,injured_area)
                     st.balloons()
                     #time.sleep(2)
                     #pyautogui.hotkey("ctrl","F5")
