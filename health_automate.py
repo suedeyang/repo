@@ -49,18 +49,13 @@ div.stButton > button:hover {
 '''
 st.markdown(button_color_code, unsafe_allow_html=True)
 
-
-
-
-
 fp=open("db.txt",'r')
 stu_list=fp.readlines()
 
 #The ID of this base is appdbFYpupPu5iPPc.
-KEY="keyLUIWnguO4OZcmu"
+KEY=""
 endpoint='https://api.airtable.com/v0/appdbFYpupPu5iPPc/harm-data'
 endpoint2='https://api.airtable.com/v0/appdbFYpupPu5iPPc/harm-data-history'
-
 
 #找出老師的電子郵件信箱
 def find_class_teachers(classes_of_student):
@@ -82,8 +77,6 @@ def find_class_teachers(classes_of_student):
     
     index_number=final_class_result_list.index(classes_of_student)
     return df.Email[index_number],df.姓名[index_number]
-
-
 
 #寄送班級導師電子郵件
 def send_gmail(basic_data,teachers_email,teachers_name,pre_get_hurt_places,injured_area):
@@ -109,11 +102,7 @@ def send_gmail(basic_data,teachers_email,teachers_name,pre_get_hurt_places,injur
         st.write('寄信失敗')
     smtp_gmail.quit()
 
-
-
-
-
-
+#資料寫入airtable
 def add_to_airtable(basic_data,injured_part_result,trauma_result,Internal_Medicine_result,treat_method_result,body_temperature,obseravtion_time,get_hurt_places):
     #Python requests headers
     headers={
@@ -144,10 +133,10 @@ def add_to_airtable(basic_data,injured_part_result,trauma_result,Internal_Medici
     return r.status_code,r2.status_code
 
 
-injured_part=['頭','頸','肩','胸','腹','背','眼','顏面','口腔','耳鼻喉','上肢','腰','下肢','臀部','會陰部']
-trauma_type=['擦傷','割裂刺傷','壓夾傷','挫創傷','扭傷','灼燙傷','叮咬傷','骨折','舊傷']
+injured_part=['頭','脖子','肩','胸','肚子','背','眼','臉','嘴巴(含牙齒)','耳鼻喉','手','腰','腳','屁股','會陰部']
+trauma_type=['擦傷','割裂刺傷','壓夾傷','挫撞傷','扭傷','灼燙傷','叮咬傷','骨折','舊傷']
 Internal_Medicine_type=['發燒','暈眩','噁心嘔吐','頭痛','牙痛','胃痛','腹痛','腹瀉','經痛','氣喘','流鼻血','疹癢','眼疾']
-treat_method=['傷口處理','冰敷','熱敷','休息觀察','通知家長','家長帶回','校方送醫','衛生教育']
+treat_method=['傷口處理','冰敷','熱敷','休息觀察','通知家長','家長帶回','校方送醫','衛生教育','其他']
 injured_places=['','操場','遊戲運動器材','普通教室','專科教室','走廊','樓梯','地下室','體育館活動中心','廁所','校外']
 rest_time=[5,10,15,20,25,30,45,60,75,90,120,150,180,240,300,360,420,480,540,600]
 
@@ -195,20 +184,14 @@ if not grade == 0 and not classes == 0 and not numbers == 0:
         fp.close()
 
 
-        st.header("受傷部位")
+        st.header("部位")
         injured_area = st.multiselect('',injured_part)
         injured_part_result=[] #受傷部位結果之串列
         for i in injured_area:
             selected_number=injured_part.index(i)
-            injured_part_result.append(selected_number)
+            injured_part_result.append(selected_number)       
 
-        #if st.checkbox("紀錄受傷地點"):
-        st.header("受傷地點")
-        pre_get_hurt_places=st.selectbox("受傷地點",injured_places)
-        get_hurt_places=injured_places.index(pre_get_hurt_places)
-        
-
-        st.header("外傷")
+        st.header("外傷種類")
         trauma = st.multiselect('',trauma_type)
         trauma_result=[]
         for i in trauma:
@@ -216,12 +199,17 @@ if not grade == 0 and not classes == 0 and not numbers == 0:
             trauma_result.append(selected_number)
 
         st.write('------------')
-        st.header("內科")
+        st.header("症狀")
         Internal_Medicine = st.multiselect('',Internal_Medicine_type)
         Internal_Medicine_result=[]
         for i in Internal_Medicine:
             selected_number=Internal_Medicine_type.index(i)
             Internal_Medicine_result.append(selected_number)
+
+         #if st.checkbox("紀錄受傷地點"):
+        st.header("受傷地點(外傷需點選)")
+        pre_get_hurt_places=st.selectbox("受傷地點",injured_places)
+        get_hurt_places=injured_places.index(pre_get_hurt_places)
 
         st.write('------------')
         st.header("處置作為")
