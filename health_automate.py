@@ -1,3 +1,5 @@
+from operator import index
+from pickle import NONE
 import streamlit as st
 #import streamlit.components.v1 as components
 import requests
@@ -106,18 +108,22 @@ basic_data=str(grade)+str(classes).zfill(2)+str(numbers).zfill(2)
 
 
 body_temperature=[]
-obseravtion_time=[]
-get_hurt_places=[]
+obseravtion_time=0
+get_hurt_places=0
 
 with st.sidebar.expander("補充資料(體溫、時間、地點)"):
     #colx,coly,colz=st.columns(3)
     if st.checkbox("記錄體溫"):
        body_temperature.append(st.slider("體溫",34.0,40.0,36.0,0.1))
+       
     if st.checkbox("紀錄休息觀察時間"):
-       obseravtion_time.append(st.selectbox("休息觀察時間",rest_time))
+       #obseravtion_time.append(st.selectbox("休息觀察時間",rest_time))
+       pre_obseravtion_time=st.selectbox("休息觀察時間",rest_time)
+       obseravtion_time=rest_time.index(pre_obseravtion_time)+1
     if st.checkbox("紀錄受傷地點"):       
-       get_hurt_places.append(st.selectbox("受傷地點",injured_places))
-    
+       #get_hurt_places.append(st.selectbox("受傷地點",injured_places))
+        pre_get_hurt_places=st.selectbox("受傷地點",injured_places)
+        get_hurt_places=injured_places.index(pre_get_hurt_places)+1
 
 if grade == 0 or classes == 0 or numbers == 0:
     st.error("先在左邊 輸入班級、姓名、座號")
@@ -169,7 +175,7 @@ if not grade == 0 and not classes == 0 and not numbers == 0:
             st.empty()
         else:
             if st.button(basic_data+"  輸入完畢 送出資料"):
-                x=add_to_airtable(basic_data,str(injured_part_result),str(trauma_result),str(Internal_Medicine_result),str(treat_method_result),str(body_temperature),str(obseravtion_time),str(get_hurt_places))
+                x=add_to_airtable(basic_data,str(injured_part_result),str(trauma_result),str(Internal_Medicine_result),str(treat_method_result),str(body_temperature),obseravtion_time,get_hurt_places)
                 #st.write("資料寫入中")
                 if x > 300:
                     st.error("資料寫入失敗，網路部份出了問題，清除資料重新登記")

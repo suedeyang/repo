@@ -13,8 +13,12 @@ API KEY
 https://airtable.com/account
 
 '''
-import datetime
+
+
 from airtable import Airtable
+#pip install airtable-python-wrapper
+
+
 #The ID of this base is appdbFYpupPu5iPPc.
 base_key='appdbFYpupPu5iPPc' #USERID
 api_key=""
@@ -23,7 +27,6 @@ airtable = Airtable(base_key,table_name,api_key)
 #pages=airtable.get_iter()
 #obseravtion_time=None
 pages=airtable.get_all()
-
 print(len(pages)) #共有幾筆資料要登載
 
 def transform_str_to_string(input_str):
@@ -40,6 +43,7 @@ for page in pages:
     #print(page)
     stu_ID=page['fields']['ID']
     print(stu_ID)
+    print(type(stu_ID))
     #受傷部位 chkPart_0 ~ chkPart_14
     chkPart=transform_str_to_string(page['fields']['injured_area'])
     print(chkPart)
@@ -54,8 +58,16 @@ for page in pages:
     chkManage=transform_str_to_string(page['fields']['treat_method'])
     print(chkManage)
     #紀錄建立時間
-    created_date_time=int(page['fields']['Created'][11:13])+8
-    print(created_date_time)
+    
+    #print(page)
+    created_date=str(page['fields']['Created'][:10]).replace("-","/")
+    created_date_hour=int(page['fields']['Created'][11:13])+8
+    if created_date_hour > 23:
+        created_date_hour=created_date_hour-24
+    created_date_minute=int(page['fields']['Created'][14:16])
+    print(created_date)
+    print(created_date_hour)
+    print(created_date_minute)
     #print(created_date_time[0:4])
     
     #體溫(補充資料)
@@ -67,6 +79,7 @@ for page in pages:
     print(get_hurt_places)
     #觀察時間
     obseravtion_time=page['fields']['obseravtion_time'].strip("[]")
+    print("OB時間")
     print(obseravtion_time)
     print("NEXT")
 #    for record in page:

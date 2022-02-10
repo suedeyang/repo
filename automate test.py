@@ -1,23 +1,12 @@
 from selenium import webdriver
 from selenium.webdriver.support.select import Select
 import time
-from airtable import Airtable
-#pip install airtable-python-wrapper
-#The ID of this base is appdbFYpupPu5iPPc.
 
-#轉換清理用副程式
-def transform_str_to_string(input_str):
-    final_list=[]
-    pre_list=list(input_str.strip("[]").replace(",",""))
-    for i in pre_list:
-        if ' ' in pre_list:
-            pre_list.remove(' ')
-    for i in pre_list:
-        final_list.append(int(i))
-    return final_list
 
 #selenium輸入資料副程式
-def input_task(stu_ID,chkPart,chkState,chkState0,chkManage,created_date,created_date_hour,created_date_minute,body_temperature,get_hurt_places,obseravtion_time):
+def input_task(stu_ID,created_date,created_date_hour,created_date_minute,obseravtion_time,get_hurt_places,body_temperature):
+    #def input_task(stu_ID,chkPart,chkState,chkState0,chkManage,created_date,created_date_hour,created_date_minute,body_temperature,get_hurt_places,obseravtion_time):
+
     #輸入學生班級姓名座號
     driver.find_element_by_id("ctl00_ContentPlaceHolder1_FindGuyList1_txtID").send_keys(stu_ID)
     driver.find_element_by_id("ctl00_ContentPlaceHolder1_FindGuyList1_btnShow").click()
@@ -37,21 +26,17 @@ def input_task(stu_ID,chkPart,chkState,chkState0,chkManage,created_date,created_
     
     #登載主要受傷資料
     #受傷部位 chkPart_0 ~ chkPart_14
-    if chkPart:
-        for i in chkPart:
-            driver.find_element_by_id(f"ctl00_ContentPlaceHolder1_chkPart_{i}").click()
+    for i in chkPart:
+        driver.find_element_by_id(f"ctl00_ContentPlaceHolder1_chkPart_{i}").click()
     #外傷 chkState_0 ~ chkState_9
-    if chkState:
-        for i in chkState:
-            driver.find_element_by_id(f"ctl00_ContentPlaceHolder1_chkState_{i}").click()
+    for i in chkState:
+        driver.find_element_by_id(f"ctl00_ContentPlaceHolder1_chkState_{i}").click()
     #內科 chkState0_0 ~ chkState0_13
-    if chkState0:
-        for i in chkState0:
-            driver.find_element_by_id(f"ctl00_ContentPlaceHolder1_chkState0_{i}").click()
+    for i in chkState0:
+        driver.find_element_by_id(f"ctl00_ContentPlaceHolder1_chkState0_{i}").click()
     #處置作為 chkManage_0 ~ chkState0_8
-    if chkManage:
-        for i in chkManage:
-            driver.find_element_by_id(f"ctl00_ContentPlaceHolder1_chkManage_{i}").click()
+    for i in chkManage:
+        driver.find_element_by_id(f"ctl00_ContentPlaceHolder1_chkManage_{i}").click()
 
     driver.implicitly_wait(5)
     #確定新增
@@ -59,17 +44,6 @@ def input_task(stu_ID,chkPart,chkState,chkState0,chkManage,created_date,created_
 
     #關閉新增畫面
     driver.find_element_by_id("ctl00_ContentPlaceHolder1_btnCancel").click()
-
-
-#抓取airtable資料
-base_key='appdbFYpupPu5iPPc' #USERID
-api_key=""
-table_name = 'harm-data'
-airtable = Airtable(base_key,table_name,api_key)
-#pages=airtable.get_iter()
-pages=airtable.get_all()
-print("今天共有",len(pages),"筆資料要登載，工作即將開始") #共有幾筆資料要登載
-time.sleep(5)
 
 
 #啟動與登入process
@@ -93,6 +67,16 @@ time.sleep(30)
 #登入完畢準備進入系統
 driver.get("http://163.32.203.8/HealthWeb/Accident/StAccident2.aspx")#切換到傷病登入畫面
 
+stu_ID="10101"
+created_date="2022/02/10"
+created_date_hour="08"
+created_date_minute="11"
+get_hurt_places=0
+obseravtion_time=1
+body_temperature="37.2"
+input_task(stu_ID,created_date,created_date_hour,created_date_minute,obseravtion_time,get_hurt_places,body_temperature)
+
+'''
 for page in pages:
     #print(page)
     stu_ID=page['fields']['ID']
@@ -120,7 +104,7 @@ for page in pages:
     else:
         created_date_hour=str(created_date_hour)
 
-    created_date_minute=str(page['fields']['Created'][14:16])
+    created_date_minute=int(page['fields']['Created'][14:16])
     #print(created_date)
     #print(created_date_hour)
     #print(created_date_minute)
@@ -131,17 +115,16 @@ for page in pages:
     #print(body_temperature) 
     #print(type(body_temperature))
     #受傷地點
-    get_hurt_places=page['fields']['get_hurt_places']
+    get_hurt_places=page['fields']['get_hurt_places'].strip("[]'")
     #print(get_hurt_places)
     #觀察時間
-    obseravtion_time=page['fields']['obseravtion_time']
+    obseravtion_time=page['fields']['obseravtion_time'].strip("[]")
     #print(obseravtion_time)
     input_task(stu_ID,chkPart,chkState,chkState0,chkManage,created_date,created_date_hour,created_date_minute,body_temperature,get_hurt_places,obseravtion_time)
-    #input_task(stu_ID,created_date,created_date_hour,created_date_minute,body_temperature,get_hurt_places,obseravtion_time)
 #    for record in page:
 #        print(record['fields']['Internal_Medicine'])
 
-
+'''
 
 
 
