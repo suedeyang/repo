@@ -14,7 +14,7 @@ https://airtable.com/account
 
 '''
 
-
+import time
 from airtable import Airtable
 #pip install airtable-python-wrapper
 
@@ -40,10 +40,8 @@ def transform_str_to_string(input_str):
     return final_list
 
 for page in pages:
-    #print(page)
+    print(page)
     stu_ID=page['fields']['ID']
-    print(stu_ID)
-    print(type(stu_ID))
     #受傷部位 chkPart_0 ~ chkPart_14
     chkPart=transform_str_to_string(page['fields']['injured_area'])
     print(chkPart)
@@ -58,8 +56,10 @@ for page in pages:
     chkManage=transform_str_to_string(page['fields']['treat_method'])
     print(chkManage)
     #紀錄建立時間
-    
+    print("紀錄建立時間")
     #print(page)
+    
+    '''
     created_date=str(page['fields']['Created'][:10]).replace("-","/")
     created_date_hour=int(page['fields']['Created'][11:13])+8
     if created_date_hour > 23:
@@ -69,18 +69,31 @@ for page in pages:
     print(created_date_hour)
     print(created_date_minute)
     #print(created_date_time[0:4])
+    '''
+    #created_date_original=page['fields']['local_time']
+    created_date=page['fields']['local_time'][0:10]
+    created_date_hour=page['fields']['local_time'][11:13]
+    created_date_minute=page['fields']['local_time'][14:16]
+    created_date_original=page['fields']['local_time'][17:19]
     
+    print(created_date_original)
+    print(created_date)
+    print(created_date_hour)
+    print(created_date_minute)
+    
+    print("體溫 受傷地點 觀察時間")
     #體溫(補充資料)
     body_temperature=page['fields']['body_temperature'].strip("[]")
     print(body_temperature) 
     #print(type(body_temperature))
     #受傷地點
-    get_hurt_places=page['fields']['get_hurt_places'].strip("[]'")
+    get_hurt_places=page['fields']['get_hurt_places']
     print(get_hurt_places)
     #觀察時間
-    obseravtion_time=page['fields']['obseravtion_time'].strip("[]")
-    print("OB時間")
+    obseravtion_time=page['fields']['obseravtion_time']
     print(obseravtion_time)
     print("NEXT")
+    #airtable.delete_by_field('ID',stu_ID)
+    #time.sleep(3)
 #    for record in page:
 #        print(record['fields']['Internal_Medicine'])

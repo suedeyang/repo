@@ -1,11 +1,7 @@
-from operator import index
-from pickle import NONE
 import streamlit as st
-#import streamlit.components.v1 as components
 import requests
 #import pyautogui
 import time
-#from streamlit_autorefresh import st_autorefresh
 
 st.set_page_config(
 	    layout="centered",  # Can be "centered" or "wide". In the future also "dashboard", etc.
@@ -17,7 +13,7 @@ st.set_page_config(
 
 reload_html_string = '''
 <head>
-        <meta http-equiv="refresh" content="3" />
+        <meta http-equiv="refresh" content="2" />
 </head>
 '''
 pre_html_code='''
@@ -60,7 +56,7 @@ stu_list=fp.readlines()
 #The ID of this base is appdbFYpupPu5iPPc.
 KEY=""
 endpoint='https://api.airtable.com/v0/appdbFYpupPu5iPPc/harm-data'
-
+endpoint2='https://api.airtable.com/v0/appdbFYpupPu5iPPc/harm-data-history'
 def add_to_airtable(basic_data,injured_part_result,trauma_result,Internal_Medicine_result,treat_method_result,body_temperature,obseravtion_time,get_hurt_places):
     #Python requests headers
     headers={
@@ -85,22 +81,27 @@ def add_to_airtable(basic_data,injured_part_result,trauma_result,Internal_Medici
         ]
     }
     r=requests.post(endpoint,json=data,headers=headers)
+    r2=requests.post(endpoint2,json=data,headers=headers)
     print(r.status_code) #HTTP status code
-    return r.status_code
+    print(r2.status_code) #HTTP status code
+    return r.status_code,r2.status_code
 
 
 injured_part=['頭','頸','肩','胸','腹','背','眼','顏面','口腔','耳鼻喉','上肢','腰','下肢','臀部','會陰部']
-trauma_type=['擦傷','割裂刺傷','壓夾傷','挫創傷','扭傷','灼燙傷','叮咬傷','骨折','舊傷','外科其它']
-Internal_Medicine_type=['發燒','暈眩','噁心嘔吐','頭痛','牙痛','胃痛','腹痛','腹瀉','經痛','氣喘','流鼻血','疹癢','眼疾','內科其它']
-treat_method=['傷口處理','冰敷','熱敷','休息觀察','通知家長','家長帶回','校方送醫','衛生教育','處理其他']
-injured_places=['操場','遊戲運動器材','普通教室','專科教室','走廊','樓梯','地下室','體育館活動中心','廁所','校外','其他']
+trauma_type=['擦傷','割裂刺傷','壓夾傷','挫創傷','扭傷','灼燙傷','叮咬傷','骨折','舊傷']
+Internal_Medicine_type=['發燒','暈眩','噁心嘔吐','頭痛','牙痛','胃痛','腹痛','腹瀉','經痛','氣喘','流鼻血','疹癢','眼疾']
+treat_method=['傷口處理','冰敷','熱敷','休息觀察','通知家長','家長帶回','校方送醫','衛生教育']
+injured_places=['','操場','遊戲運動器材','普通教室','專科教室','走廊','樓梯','地下室','體育館活動中心','廁所','校外']
 rest_time=[5,10,15,20,25,30,45,60,75,90,120,150,180,240,300,360,420,480,540,600]
 
 #st.sidebar.title("龍華國小傷病管理系統")
 st.sidebar.title("1.填寫基本資料")
 grade=st.sidebar.selectbox('年級',range(0,7))
-classes=st.sidebar.selectbox('班級',range(0,18))
-numbers=st.sidebar.selectbox('座號',range(0,35))
+if grade == 4:
+    classes=st.sidebar.selectbox('班級',range(0,18))
+else:
+    classes=st.sidebar.selectbox('班級',range(0,16))
+numbers=st.sidebar.selectbox('座號',range(0,36))
 #body_temperature = None
 #obseravtion_time=None
 #get_hurt_places=None
@@ -120,10 +121,6 @@ with st.sidebar.expander("補充資料(體溫、時間、地點)"):
        #obseravtion_time.append(st.selectbox("休息觀察時間",rest_time))
        pre_obseravtion_time=st.selectbox("休息觀察時間",rest_time)
        obseravtion_time=rest_time.index(pre_obseravtion_time)+1
-    if st.checkbox("紀錄受傷地點"):       
-       #get_hurt_places.append(st.selectbox("受傷地點",injured_places))
-        pre_get_hurt_places=st.selectbox("受傷地點",injured_places)
-        get_hurt_places=injured_places.index(pre_get_hurt_places)+1
 
 if grade == 0 or classes == 0 or numbers == 0:
     st.error("先在左邊 輸入班級、姓名、座號")
@@ -145,7 +142,12 @@ if not grade == 0 and not classes == 0 and not numbers == 0:
             selected_number=injured_part.index(i)
             injured_part_result.append(selected_number)
 
-        st.write('------------')
+        #if st.checkbox("紀錄受傷地點"):
+        st.header("受傷地點")
+        pre_get_hurt_places=st.selectbox("受傷地點",injured_places)
+        get_hurt_places=injured_places.index(pre_get_hurt_places)
+        
+
         st.header("外傷")
         trauma = st.multiselect('',trauma_type)
         trauma_result=[]
@@ -175,9 +177,9 @@ if not grade == 0 and not classes == 0 and not numbers == 0:
             st.empty()
         else:
             if st.button(basic_data+"  輸入完畢 送出資料"):
-                x=add_to_airtable(basic_data,str(injured_part_result),str(trauma_result),str(Internal_Medicine_result),str(treat_method_result),str(body_temperature),obseravtion_time,get_hurt_places)
+                x1,x2=add_to_airtable(basic_data,str(injured_part_result),str(trauma_result),str(Internal_Medicine_result),str(treat_method_result),str(body_temperature),obseravtion_time,get_hurt_places)
                 #st.write("資料寫入中")
-                if x > 300:
+                if x1 > 300 or x2 > 300:
                     st.error("資料寫入失敗，網路部份出了問題，清除資料重新登記")
                     #time.sleep(3)
                     #pyautogui.hotkey("ctrl","F5")

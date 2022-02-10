@@ -109,10 +109,17 @@ for page in pages:
     #print(chkState0)
     #處置作為 chkManage_0 ~ chkState0_8    
     chkManage=transform_str_to_string(page['fields']['treat_method'])
-    #print(chkManage)
-    #紀錄建立時間
-    
-    #print(page)
+    chkManage.append(7) #加上必選的衛生教育
+        
+    #紀錄建立時間 在airtable中建立local_time的欄位使用formula來轉換當地時間
+    #https://support.airtable.com/hc/en-us/articles/360058239594-Timezones-and-locales
+
+    created_date=page['fields']['local_time'][0:10]
+    created_date_hour=page['fields']['local_time'][11:13]
+    created_date_minute=page['fields']['local_time'][14:16]
+    created_date_status=page['fields']['local_time'][17:19] #AM、PM的區別 中午怎麼半?
+
+    '''
     created_date=str(page['fields']['Created'][:10]).replace("-","/")
     created_date_hour=int(page['fields']['Created'][11:13])+8
     if created_date_hour > 23:
@@ -120,12 +127,14 @@ for page in pages:
     else:
         created_date_hour=str(created_date_hour)
 
-    created_date_minute=str(page['fields']['Created'][14:16])
+    created_date_minute=str(page['fields']['Created'][14:16]).zfill(2)
     #print(created_date)
     #print(created_date_hour)
     #print(created_date_minute)
     #print(created_date_time[0:4])
-    
+    '''
+
+
     #體溫(補充資料)
     body_temperature=page['fields']['body_temperature'].strip("[]")
     #print(body_temperature) 
