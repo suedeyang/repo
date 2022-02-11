@@ -17,7 +17,7 @@ def transform_str_to_string(input_str):
     return final_list
 
 #selenium輸入資料副程式
-def input_task(stu_ID,chkPart,chkState,chkState0,chkManage,created_date,created_date_hour,created_date_minute,body_temperature,get_hurt_places,obseravtion_time):
+def input_task(stu_ID,chkPart,chkState,chkState0,chkManage,created_date,created_date_hour,created_date_minute,created_date_period,body_temperature,get_hurt_places,obseravtion_time):
     #輸入學生班級姓名座號
     driver.find_element_by_id("ctl00_ContentPlaceHolder1_FindGuyList1_txtID").send_keys(stu_ID)
     driver.find_element_by_id("ctl00_ContentPlaceHolder1_FindGuyList1_btnShow").click()
@@ -28,12 +28,11 @@ def input_task(stu_ID,chkPart,chkState,chkState0,chkManage,created_date,created_
     driver.find_element_by_id("ctl00_ContentPlaceHolder1_txt_Date").send_keys(created_date)
     Select(driver.find_element_by_id("ctl00_ContentPlaceHolder1_ddl_Hour")).select_by_visible_text(created_date_hour)#時
     Select(driver.find_element_by_id("ctl00_ContentPlaceHolder1_ddl_Minute")).select_by_visible_text(created_date_minute)#分
-    #Select(driver.find_element_by_id("id="ctl00_ContentPlaceHolder1_ddlMoment"")).select_by_visible_text(created_date_minute)#時段(上午下午)
+    Select(driver.find_element_by_id("ctl00_ContentPlaceHolder1_ddlMoment")).select_by_index(created_date_period)#時段(上午下午)
     Select(driver.find_element_by_id("ctl00_ContentPlaceHolder1_ddlMins")).select_by_index(obseravtion_time)#休息觀察時間
-    #Select(driver.find_element_by_id("ctl00_ContentPlaceHolder1_ddlMins")).select_by_visible_text(obseravtion_time)#休息觀察時間
     Select(driver.find_element_by_id("ctl00_ContentPlaceHolder1_ddlPlace")).select_by_index(get_hurt_places)#受傷地點
     Select(driver.find_element_by_id("ctl00_ContentPlaceHolder1_ddlHeat")).select_by_visible_text(body_temperature)#體溫
-    #Select(driver.find_element_by_id("ctl00_ContentPlaceHolder1_ddlHeat")).select_by_index(1)#體溫
+    
     
     #登載主要受傷資料
     #受傷部位 chkPart_0 ~ chkPart_14
@@ -68,6 +67,9 @@ table_name = 'harm-data'
 airtable = Airtable(base_key,table_name,api_key)
 #pages=airtable.get_iter()
 pages=airtable.get_all()
+if len(pages) == 0:
+    print("今天沒紀錄要登載，直接關閉視窗吧")
+    time.sleep(60)
 print("今天共有",len(pages),"筆資料要登載，工作即將開始") #共有幾筆資料要登載
 time.sleep(5)
 
@@ -116,24 +118,13 @@ for page in pages:
 
     created_date=page['fields']['local_time'][0:10]
     created_date_hour=page['fields']['local_time'][11:13]
-    created_date_minute=page['fields']['local_time'][14:16]
-    created_date_status=page['fields']['local_time'][17:19] #AM、PM的區別 中午怎麼半?
-
-    '''
-    created_date=str(page['fields']['Created'][:10]).replace("-","/")
-    created_date_hour=int(page['fields']['Created'][11:13])+8
-    if created_date_hour > 23:
-        created_date_hour=str(created_date_hour-24)
+    if int(created_date_hour) < 12:
+        created_date_period=0
+    elif int(created_date_hour) >12:
+        created_date_period=2
     else:
-        created_date_hour=str(created_date_hour)
-
-    created_date_minute=str(page['fields']['Created'][14:16]).zfill(2)
-    #print(created_date)
-    #print(created_date_hour)
-    #print(created_date_minute)
-    #print(created_date_time[0:4])
-    '''
-
+        created_date_period=1
+    created_date_minute=page['fields']['local_time'][14:16]
 
     #體溫(補充資料)
     body_temperature=page['fields']['body_temperature'].strip("[]")
@@ -145,15 +136,11 @@ for page in pages:
     #觀察時間
     obseravtion_time=page['fields']['obseravtion_time']
     #print(obseravtion_time)
-    input_task(stu_ID,chkPart,chkState,chkState0,chkManage,created_date,created_date_hour,created_date_minute,body_temperature,get_hurt_places,obseravtion_time)
-    #input_task(stu_ID,created_date,created_date_hour,created_date_minute,body_temperature,get_hurt_places,obseravtion_time)
-#    for record in page:
-#        print(record['fields']['Internal_Medicine'])
+    input_task(stu_ID,chkPart,chkState,chkState0,chkManage,created_date,created_date_hour,created_date_minute,created_date_period,body_temperature,get_hurt_places,obseravtion_time)
+    airtable.delete_by_field('ID',str(stu_ID))
 
-
-
-
-
+driver.close()
+print("今天的工作已完成"，你可以安心地關閉這個視窗了)
 
 
 

@@ -5,6 +5,9 @@ import time
 import smtplib
 from email.mime.text import MIMEText
 import pandas as pd
+import datetime
+
+
 
 st.set_page_config(
 	    layout="centered",  # Can be "centered" or "wide". In the future also "dashboard", etc.
@@ -12,7 +15,6 @@ st.set_page_config(
 	    page_title="龍華國小傷病登記系統",  # String or None. Strings get appended with "• Streamlit". 
 	    page_icon=None,  # String, anything supported by st.image, or None.
         )
-
 
 reload_html_string = '''
 <head>
@@ -29,9 +31,8 @@ pre_html_code='''
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.1/dist/umd/popper.min.js" integrity="sha384-W8fXfP3gkOKtndU4JGtKDvXbO53Wy8SZCQHczT5FMiiqmQfUpWbYdTil/SxwZgAN" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.min.js" integrity="sha384-skAcpIdS7UcVUC05LJ9Dxay8AXcDYfBJqt1CJ85S/CFujBsIzCIv+l9liuYLaMQ/" crossorigin="anonymous"></script>
 </body>
+st.markdown(pre_html_code,unsafe_allow_html=True)
 '''
-#st.markdown(pre_html_code,unsafe_allow_html=True)
-
 
 button_color_code='''
 <style>
@@ -79,10 +80,12 @@ def find_class_teachers(classes_of_student):
     return df.Email[index_number],df.姓名[index_number]
 
 #寄送班級導師電子郵件
-def send_gmail(basic_data,teachers_email,teachers_name,pre_get_hurt_places,injured_area):
+def send_gmail(basic_data,teachers_email,teachers_name,injured_area,trauma,pre_get_hurt_places,Internal_Medicine,treat_method_choice,body_temperature,pre_obseravtion_time):
+    dt=datetime.datetime.now()
     gmail_addr='suedeyang@mail.lhps.kh.edu.tw'
-    gmail_pwd=''
-    email_msg=f'{teachers_name}老師您好：\n貴班{basic_data}小朋友於健康中心登記傷病，特此通知，登載資料如下：\n受傷部位：{injured_area}\n受傷地點：{pre_get_hurt_places}'
+    gmail_pwd='uy9wwd7r'
+    email_msg=f'{teachers_name}老師您好：\n貴班{basic_data}小朋友於健康中心登記傷病，特此通知，登載資料如下：\n時間：{dt.strftime("%Y/%m/%d %H:%M:%S")}\n受傷部位：{injured_area}\n外傷種類：{trauma}\n受傷地點：{pre_get_hurt_places}\n症狀：{Internal_Medicine}\n處置作為：{treat_method_choice}\n記錄體溫：{body_temperature}\n紀錄休息觀察時間：{pre_obseravtion_time}\n\n若有任何問題勿回信，請直接與健康中心聯絡'
+    
     mime_text=MIMEText(email_msg,'plain','utf-8')
     mime_text['Subject']=f'{basic_data}傷病資料'
     mime_text['From']='龍華國小健康中心'
@@ -97,9 +100,9 @@ def send_gmail(basic_data,teachers_email,teachers_name,pre_get_hurt_places,injur
     smtp_gmail.login(gmail_addr,gmail_pwd) #https://myaccount.google.com/lesssecureapps 低安全性登入要打開
     status=smtp_gmail.sendmail(gmail_addr,teachers_email,mime_text)
     if not status:  #因為成功的話 回傳的dic會是空的
-        st.write("寄信成功")
+        st.success("導師通知信 寄送成功")
     else:
-        st.write('寄信失敗')
+        st.error('導師通知信 寄信失敗 不過沒關係，不需要重新登記')
     smtp_gmail.quit()
 
 #資料寫入airtable
@@ -154,6 +157,8 @@ numbers=st.sidebar.selectbox('座號',range(0,36))
 basic_data=str(grade)+str(classes).zfill(2)+str(numbers).zfill(2)
 classes_of_student=str(grade)+str(classes).zfill(2)
 
+pre_obseravtion_time=[]
+pre_get_hurt_places=[]
 body_temperature=[]
 obseravtion_time=0
 get_hurt_places=0
@@ -170,19 +175,12 @@ with st.sidebar.expander("補充資料(體溫、時間、地點)"):
 
 if grade == 0 or classes == 0 or numbers == 0:
     st.error("先在左邊 輸入班級、姓名、座號")
-    st.image("https://pic.pimg.tw/c41666/1560907397-2167670633_n.png",caption='身體部位圖')
+    #st.image("https://pic.pimg.tw/c41666/1560907397-2167670633_n.png",caption='身體部位圖')
 if not grade == 0 and not classes == 0 and not numbers == 0:
     if basic_data+"\n" in stu_list:
         messages=f"{grade}年{classes}班{numbers}號 資料驗證正確，登記完傷病資料請按藍色按鈕送出"
-        st.success(messages)    
-        #teachers_email,teachers_name=find_class_teachers(classes_of_student)
-        #st.write(teachers_email,teachers_name)
-        
-        #html_string = f"<h2>{grade}年{classes}班{numbers}號 小朋友開始登記傷病資料</h>"
-        #st.markdown(html_string, unsafe_allow_html=True)
-        #st.write(grade,"年",classes,"班",numbers,"號 小朋友開始登記受傷資料")
+        st.success(messages)
         fp.close()
-
 
         st.header("部位")
         injured_area = st.multiselect('',injured_part)
@@ -198,6 +196,12 @@ if not grade == 0 and not classes == 0 and not numbers == 0:
             selected_number=trauma_type.index(i)
             trauma_result.append(selected_number)
 
+        if trauma:
+            st.header("受傷地點(外傷需點選)")
+            pre_get_hurt_places=st.selectbox("",injured_places)
+            get_hurt_places=injured_places.index(pre_get_hurt_places)
+
+
         st.write('------------')
         st.header("症狀")
         Internal_Medicine = st.multiselect('',Internal_Medicine_type)
@@ -205,11 +209,6 @@ if not grade == 0 and not classes == 0 and not numbers == 0:
         for i in Internal_Medicine:
             selected_number=Internal_Medicine_type.index(i)
             Internal_Medicine_result.append(selected_number)
-
-         #if st.checkbox("紀錄受傷地點"):
-        st.header("受傷地點(外傷需點選)")
-        pre_get_hurt_places=st.selectbox("受傷地點",injured_places)
-        get_hurt_places=injured_places.index(pre_get_hurt_places)
 
         st.write('------------')
         st.header("處置作為")
@@ -235,13 +234,12 @@ if not grade == 0 and not classes == 0 and not numbers == 0:
                 else:
                     st.success("資料寫入成功!!")
                     teachers_email,teachers_name=find_class_teachers(classes_of_student)
-                    send_gmail(basic_data,teachers_email,teachers_name,pre_get_hurt_places,injured_area)
+                    send_gmail(basic_data,teachers_email,teachers_name,injured_area,trauma,pre_get_hurt_places,Internal_Medicine,treat_method_choice,body_temperature,pre_obseravtion_time)
                     st.balloons()
                     #time.sleep(2)
                     #pyautogui.hotkey("ctrl","F5")
                     st.markdown(reload_html_string, unsafe_allow_html=True)
-                    
-                    
+                       
     else:
         messages=f"龍華國小沒有{grade}年{classes}班{numbers}號 這位小朋友喔!!"
         st.error(messages)
