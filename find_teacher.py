@@ -1,16 +1,19 @@
-from numpy import isin
 import streamlit as st
-import pandas as pd
-classrooms=["自然教室1","自然教室2","自然教室3","自然教室4","自然教室5","自然教室6","自然教室7","蝴蝶園教室","電腦教室1","電腦教室2","電腦教室3","語言教室1","語言教室2","表演藝術教室","音樂教室2","協同教室","美勞教室1","美勞教室2","美勞教室3"]
+#import pandas as pd
+#classrooms=["自然教室1","自然教室2","自然教室3","自然教室4","自然教室5","自然教室6","自然教室7","蝴蝶園教室","電腦教室1","電腦教室2","電腦教室3","語言教室1","語言教室2","表演藝術教室","音樂教室2","協同教室","美勞教室1","美勞教室2","美勞教室3"]
 
 
 url="http://school.kh.edu.tw/view/index.php?WebID=180&MainType=103&SubType=0&MainMenuId=69026&SubMenuId=0&NowMainId=69026&NowSubId=0"
+'''
 html=pd.read_html(url,header=0)
 df=html[0]
 df.drop(['NO.'],axis=1)
 df=df.fillna("")
 #st.dataframe(df.astype(str))
 final_class_result_list=[]
+'''
+'''
+
 
 classes=list(df.職稱)
 for i in classes:
@@ -34,7 +37,7 @@ if "4-6=" in classes:
 #st.write(classes)
 #st.write(len(df.Email))
 
-'''
+
 #st.write(class_1)
 st.sidebar.header("請選擇班級或科任老師(可多選)")
 class_1=st.sidebar.multiselect("班級",df.職稱.unique()[7:93],help="可一次選取多個班級")

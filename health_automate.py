@@ -6,8 +6,11 @@ import smtplib
 from email.mime.text import MIMEText
 import pandas as pd
 import datetime
+<<<<<<< Updated upstream
 
 
+=======
+>>>>>>> Stashed changes
 
 st.set_page_config(
 	    layout="centered",  # Can be "centered" or "wide". In the future also "dashboard", etc.
@@ -163,7 +166,7 @@ body_temperature=[]
 obseravtion_time=0
 get_hurt_places=0
 
-with st.sidebar.expander("補充資料(體溫、時間、地點)"):
+with st.sidebar.expander("補充資料(體溫、時間)"):
     #colx,coly,colz=st.columns(3)
     if st.checkbox("記錄體溫"):
        body_temperature.append(st.slider("體溫",34.0,40.0,36.0,0.1))
@@ -196,6 +199,7 @@ if not grade == 0 and not classes == 0 and not numbers == 0:
             selected_number=trauma_type.index(i)
             trauma_result.append(selected_number)
 
+<<<<<<< Updated upstream
         if trauma:
             st.header("受傷地點(外傷需點選)")
             pre_get_hurt_places=st.selectbox("",injured_places)
@@ -203,6 +207,8 @@ if not grade == 0 and not classes == 0 and not numbers == 0:
 
 
         st.write('------------')
+=======
+>>>>>>> Stashed changes
         st.header("症狀")
         Internal_Medicine = st.multiselect('',Internal_Medicine_type)
         Internal_Medicine_result=[]
@@ -210,7 +216,15 @@ if not grade == 0 and not classes == 0 and not numbers == 0:
             selected_number=Internal_Medicine_type.index(i)
             Internal_Medicine_result.append(selected_number)
 
+<<<<<<< Updated upstream
         st.write('------------')
+=======
+        #if st.checkbox("紀錄受傷地點"):
+        st.header("受傷地點(外傷需點選)")
+        pre_get_hurt_places=st.selectbox("受傷地點",injured_places)
+        get_hurt_places=injured_places.index(pre_get_hurt_places)
+
+>>>>>>> Stashed changes
         st.header("處置作為")
         treat_method_choice = st.multiselect('',treat_method)
         treat_method_result=[]
@@ -239,7 +253,11 @@ if not grade == 0 and not classes == 0 and not numbers == 0:
                     #time.sleep(2)
                     #pyautogui.hotkey("ctrl","F5")
                     st.markdown(reload_html_string, unsafe_allow_html=True)
+<<<<<<< Updated upstream
                        
+=======
+                                        
+>>>>>>> Stashed changes
     else:
         messages=f"龍華國小沒有{grade}年{classes}班{numbers}號 這位小朋友喔!!"
         st.error(messages)
