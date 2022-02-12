@@ -97,6 +97,7 @@ driver.get("http://163.32.203.8/HealthWeb/Accident/StAccident2.aspx")#切換到�
 
 for page in pages:
     #print(page)
+    data_id=page['id']
     stu_ID=page['fields']['ID']
     #print(stu_ID)
     #受傷部位 chkPart_0 ~ chkPart_14
@@ -111,7 +112,10 @@ for page in pages:
     #print(chkState0)
     #處置作為 chkManage_0 ~ chkState0_8    
     chkManage=transform_str_to_string(page['fields']['treat_method'])
-    chkManage.append(7) #加上必選的衛生教育
+    if 7 in chkManage:
+        chkManage=chkManage
+    else:
+        chkManage.append(7) #加上必選的衛生教育
         
     #紀錄建立時間 在airtable中建立local_time的欄位使用formula來轉換當地時間
     #https://support.airtable.com/hc/en-us/articles/360058239594-Timezones-and-locales
@@ -137,7 +141,8 @@ for page in pages:
     obseravtion_time=page['fields']['obseravtion_time']
     #print(obseravtion_time)
     input_task(stu_ID,chkPart,chkState,chkState0,chkManage,created_date,created_date_hour,created_date_minute,created_date_period,body_temperature,get_hurt_places,obseravtion_time)
-    airtable.delete_by_field('ID',str(stu_ID))
+    airtable.delete(data_id)
+    #airtable.delete_by_field('ID',str(stu_ID))
 
 driver.close()
 print("今天的工作已完成"，你可以安心地關閉這個視窗了)
