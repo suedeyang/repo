@@ -145,7 +145,7 @@ for page in pages:
     #airtable.delete_by_field('ID',str(stu_ID))
 
 driver.close()
-print("今天的工作已完成"，你可以安心地關閉這個視窗了)
+print("今天的工作已完成，你可以安心地關閉這個視窗了")
 
 
 

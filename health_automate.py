@@ -18,7 +18,7 @@ st.set_page_config(
 
 reload_html_string = '''
 <head>
-        <meta http-equiv="refresh" content="2" />
+        <meta http-equiv="refresh" content="0" />
 </head>
 '''
 pre_html_code='''
