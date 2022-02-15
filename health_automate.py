@@ -80,11 +80,11 @@ def find_class_teachers(classes_of_student):
     return df.Email[index_number],df.姓名[index_number]
 
 #寄送班級導師電子郵件
-def send_gmail(basic_data,teachers_email,teachers_name,injured_area,trauma,pre_get_hurt_places,Internal_Medicine,treat_method_choice,body_temperature,pre_obseravtion_time):
+def send_gmail(basic_data,teachers_email,teachers_name,injured_area,trauma,pre_get_hurt_places,Internal_Medicine,treat_method_choice,body_temperature,pre_obseravtion_time,txtMemo):
     dt=datetime.datetime.now()
     gmail_addr='suedeyang@mail.lhps.kh.edu.tw'
     gmail_pwd=''
-    email_msg=f'{teachers_name}老師您好：\n貴班{basic_data}小朋友於健康中心登記傷病，特此通知，登載資料如下：\n時間：{dt.strftime("%Y/%m/%d %H:%M:%S")}\n受傷部位：{injured_area}\n外傷種類：{trauma}\n受傷地點：{pre_get_hurt_places}\n症狀：{Internal_Medicine}\n處置作為：{treat_method_choice}\n記錄體溫：{body_temperature}\n紀錄休息觀察時間：{pre_obseravtion_time}\n\n若有任何問題勿回信，請直接與健康中心聯絡'
+    email_msg=f'{teachers_name}老師您好：\n貴班{basic_data}小朋友於健康中心登記傷病，特此通知，登載資料如下：\n時間：{dt.strftime("%Y/%m/%d %H:%M:%S")}\n受傷部位：{injured_area}\n外傷種類：{trauma}\n受傷地點：{pre_get_hurt_places}\n症狀：{Internal_Medicine}\n處置作為：{treat_method_choice}\n記錄體溫：{body_temperature}\n紀錄休息觀察時間：{pre_obseravtion_time}\n備註：{txtMemo}\n\n若有任何問題勿回信，請直接與健康中心聯絡'
     
     mime_text=MIMEText(email_msg,'plain','utf-8')
     mime_text['Subject']=f'{basic_data}傷病資料'
@@ -106,7 +106,7 @@ def send_gmail(basic_data,teachers_email,teachers_name,injured_area,trauma,pre_g
     smtp_gmail.quit()
 
 #資料寫入airtable
-def add_to_airtable(basic_data,injured_part_result,trauma_result,Internal_Medicine_result,treat_method_result,body_temperature,obseravtion_time,get_hurt_places):
+def add_to_airtable(basic_data,injured_part_result,trauma_result,Internal_Medicine_result,treat_method_result,body_temperature,obseravtion_time,get_hurt_places,txtMemo):
     #Python requests headers
     headers={
         "Authorization": f'Bearer {KEY}', #注意前面的,
@@ -125,6 +125,7 @@ def add_to_airtable(basic_data,injured_part_result,trauma_result,Internal_Medici
                 "get_hurt_places":get_hurt_places,
                 "obseravtion_time":obseravtion_time,
                 "body_temperature":body_temperature,
+                "txt":txtMemo,
                 }
             }
         ]
@@ -157,6 +158,7 @@ numbers=st.sidebar.selectbox('座號',range(0,36))
 basic_data=str(grade)+str(classes).zfill(2)+str(numbers).zfill(2)
 classes_of_student=str(grade)+str(classes).zfill(2)
 
+txtMemo=[]
 pre_obseravtion_time=[]
 pre_get_hurt_places=[]
 body_temperature=[]
@@ -176,7 +178,11 @@ with st.sidebar.expander("補充資料(體溫、時間)"):
 
 #id="ctl00_ContentPlaceHolder1_txtMemo"
 
-#with st.sidebar.expander("緊急處置"):
+with st.sidebar.expander("文字備註"):
+    input_txt=st.text_input("輸入文字、更新文字一定要按ENTER",placeholder="請在此輸入")
+    if input_txt:
+        st.write("檢查：備註欄的文字為「",input_txt,"」")
+        txtMemo.append(input_txt)
 
 
 if grade == 0 or classes == 0 or numbers == 0:
@@ -189,7 +195,7 @@ if not grade == 0 and not classes == 0 and not numbers == 0:
         fp.close()
 
         st.header("部位")
-        injured_area = st.multiselect('',injured_part)
+        injured_area = st.multiselect('',['頭','手','腳','臉','眼','嘴巴(含牙齒)','脖子','肩','胸','肚子','背','耳鼻喉','腰','屁股','會陰部'])
         injured_part_result=[] #受傷部位結果之串列
         for i in injured_area:
             selected_number=injured_part.index(i)
@@ -225,12 +231,12 @@ if not grade == 0 and not classes == 0 and not numbers == 0:
             treat_method_result.append(selected_number)
         
         st.write("-------")
-        if not injured_part_result  and not trauma_result and not Internal_Medicine_result and not treat_method_result:
+        if not injured_part_result  and not trauma_result and not Internal_Medicine_result and not treat_method_result and not txtMemo:
             #st.error("請輸入傷病資料")    
             st.empty()
         else:
             if st.button(basic_data+"  輸入完畢 送出資料"):
-                x1,x2=add_to_airtable(basic_data,str(injured_part_result),str(trauma_result),str(Internal_Medicine_result),str(treat_method_result),str(body_temperature),obseravtion_time,get_hurt_places)
+                x1,x2=add_to_airtable(basic_data,str(injured_part_result),str(trauma_result),str(Internal_Medicine_result),str(treat_method_result),str(body_temperature),obseravtion_time,get_hurt_places,str(txtMemo))
                 #st.write("資料寫入中")
                 if x1 > 300 or x2 > 300:
                     st.error("資料寫入失敗，網路部份出了問題，清除資料重新登記")
@@ -240,8 +246,8 @@ if not grade == 0 and not classes == 0 and not numbers == 0:
                 else:
                     st.success("資料寫入成功!!")
                     teachers_email,teachers_name=find_class_teachers(classes_of_student)
-                    send_gmail(basic_data,teachers_email,teachers_name,injured_area,trauma,pre_get_hurt_places,Internal_Medicine,treat_method_choice,body_temperature,pre_obseravtion_time)
-                    st.balloons()
+                    send_gmail(basic_data,teachers_email,teachers_name,injured_area,trauma,pre_get_hurt_places,Internal_Medicine,treat_method_choice,body_temperature,pre_obseravtion_time,txtMemo)
+                    #st.balloons()
                     #time.sleep(2)
                     #pyautogui.hotkey("ctrl","F5")
                     st.markdown(reload_html_string, unsafe_allow_html=True)

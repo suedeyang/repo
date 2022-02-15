@@ -15,7 +15,7 @@ def transform_str_to_string(input_str):
             final_list.append(int(x))
     return final_list
 
-def transform_str_to_string_old(input_str):
+def transform_str_to_string_old(input_str): #這個錯誤的副程式會把10拆成1,0
     final_list=[]
     pre_list=list(input_str.strip("[]").replace(",",""))
     for i in pre_list:
@@ -26,7 +26,7 @@ def transform_str_to_string_old(input_str):
     return final_list
 
 #selenium輸入資料副程式
-def input_task(stu_ID,chkPart,chkState,chkState0,chkManage,created_date,created_date_hour,created_date_minute,created_date_period,body_temperature,get_hurt_places,obseravtion_time):
+def input_task(stu_ID,chkPart,chkState,chkState0,chkManage,created_date,created_date_hour,created_date_minute,created_date_period,body_temperature,get_hurt_places,obseravtion_time,txtMemo):
     #輸入學生班級姓名座號
     driver.find_element_by_id("ctl00_ContentPlaceHolder1_FindGuyList1_txtID").send_keys(stu_ID)
     driver.find_element_by_id("ctl00_ContentPlaceHolder1_FindGuyList1_btnShow").click()
@@ -41,7 +41,7 @@ def input_task(stu_ID,chkPart,chkState,chkState0,chkManage,created_date,created_
     Select(driver.find_element_by_id("ctl00_ContentPlaceHolder1_ddlMins")).select_by_index(obseravtion_time)#休息觀察時間
     Select(driver.find_element_by_id("ctl00_ContentPlaceHolder1_ddlPlace")).select_by_index(get_hurt_places)#受傷地點
     Select(driver.find_element_by_id("ctl00_ContentPlaceHolder1_ddlHeat")).select_by_visible_text(body_temperature)#體溫
-    
+    driver.find_element_by_id("ctl00_ContentPlaceHolder1_txtMemo").send_keys(txtMemo) #文字備註
     
     #登載主要受傷資料
     #受傷部位 chkPart_0 ~ chkPart_14
@@ -149,7 +149,9 @@ for page in pages:
     #觀察時間
     obseravtion_time=page['fields']['obseravtion_time']
     #print(obseravtion_time)
-    input_task(stu_ID,chkPart,chkState,chkState0,chkManage,created_date,created_date_hour,created_date_minute,created_date_period,body_temperature,get_hurt_places,obseravtion_time)
+    txtMemo=page['fields']['txt'].strip("[]")
+
+    input_task(stu_ID,chkPart,chkState,chkState0,chkManage,created_date,created_date_hour,created_date_minute,created_date_period,body_temperature,get_hurt_places,obseravtion_time,txtMemo)
     airtable.delete(data_id)
     #airtable.delete_by_field('ID',str(stu_ID))
 
