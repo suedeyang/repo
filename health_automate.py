@@ -173,6 +173,12 @@ with st.sidebar.expander("補充資料(體溫、時間)"):
        pre_obseravtion_time=st.selectbox("休息觀察時間",rest_time)
        obseravtion_time=rest_time.index(pre_obseravtion_time)+1
 
+
+#id="ctl00_ContentPlaceHolder1_txtMemo"
+
+#with st.sidebar.expander("緊急處置"):
+
+
 if grade == 0 or classes == 0 or numbers == 0:
     st.error("先在左邊 輸入班級、姓名、座號")
     #st.image("https://pic.pimg.tw/c41666/1560907397-2167670633_n.png",caption='身體部位圖')

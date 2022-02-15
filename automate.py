@@ -8,6 +8,15 @@ from airtable import Airtable
 #轉換清理用副程式
 def transform_str_to_string(input_str):
     final_list=[]
+    pre_list=input_str.strip("[]")
+    pre_final_list=list(pre_list.split(","))
+    for x in pre_final_list:
+        if x != '':
+            final_list.append(int(x))
+    return final_list
+
+def transform_str_to_string_old(input_str):
+    final_list=[]
     pre_list=list(input_str.strip("[]").replace(",",""))
     for i in pre_list:
         if ' ' in pre_list:
