@@ -7,7 +7,8 @@ from email.mime.text import MIMEText
 import pandas as pd
 import datetime
 
-
+#改勾選的電子郵件寄送的參數要改
+# emoji位置 https://www.emojiall.com/zh-hant/copy#categories-B  https://www.emojiall.com/zh-hant
 
 st.set_page_config(
 	    layout="centered",  # Can be "centered" or "wide". In the future also "dashboard", etc.
@@ -20,18 +21,6 @@ reload_html_string = '''
 <head>
         <meta http-equiv="refresh" content="0" />
 </head>
-'''
-pre_html_code='''
-<!doctype html>
-<html>
-<head>
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossorigin="anonymous">
-</head>
-<body>
-<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.1/dist/umd/popper.min.js" integrity="sha384-W8fXfP3gkOKtndU4JGtKDvXbO53Wy8SZCQHczT5FMiiqmQfUpWbYdTil/SxwZgAN" crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.min.js" integrity="sha384-skAcpIdS7UcVUC05LJ9Dxay8AXcDYfBJqt1CJ85S/CFujBsIzCIv+l9liuYLaMQ/" crossorigin="anonymous"></script>
-</body>
-st.markdown(pre_html_code,unsafe_allow_html=True)
 '''
 
 button_color_code='''
@@ -137,11 +126,11 @@ def add_to_airtable(basic_data,injured_part_result,trauma_result,Internal_Medici
     return r.status_code,r2.status_code
 
 
-injured_part=['頭','脖子','肩','胸','肚子','背','眼','臉','嘴巴(含牙齒)','耳鼻喉','手','腰','腳','屁股','會陰部']
+injured_part=['頭','脖子','肩','胸','肚子','背','眼','臉','嘴(含牙齒)','耳鼻喉','手','腰','腳','屁股','會陰部']
 trauma_type=['擦傷','割裂刺傷','壓夾傷','挫撞傷','扭傷','灼燙傷','叮咬傷','骨折','舊傷']
 Internal_Medicine_type=['發燒','暈眩','噁心嘔吐','頭痛','牙痛','胃痛','腹痛','腹瀉','經痛','氣喘','流鼻血','疹癢','眼疾']
 treat_method=['傷口處理','冰敷','熱敷','休息觀察','通知家長','家長帶回','校方送醫','衛生教育','其他']
-injured_places=['','操場','遊戲運動器材','班級教室','科任教室','走廊、露台','樓梯','地下室','活動中心','廁所','校外','胡蝶園、飛龍廣場、龍之華廣場、林間教室及其他']
+injured_places=['不登記','操場','遊戲運動器材','班級教室','科任教室','走廊、露台','樓梯','地下室','活動中心','廁所','校外','蝴蝶園、飛龍廣場、龍之華廣場、林間教室及其他']
 rest_time=[5,10,15,20,25,30,45,60,75,90,120,150,180,240,300,360,420,480,540,600]
 
 #st.sidebar.title("龍華國小傷病管理系統")
@@ -190,45 +179,222 @@ if grade == 0 or classes == 0 or numbers == 0:
     #st.image("https://pic.pimg.tw/c41666/1560907397-2167670633_n.png",caption='身體部位圖')
 if not grade == 0 and not classes == 0 and not numbers == 0:
     if basic_data+"\n" in stu_list:
-        messages=f"{grade}年{classes}班{numbers}號 資料驗證正確，登記完傷病資料請按藍色按鈕送出"
+        messages=f"{grade}年{classes}班{numbers}號 資料驗證正確，登記完傷病資料(至少勾選一個)請按最下方藍色按鈕送出"
         st.success(messages)
         fp.close()
 
         st.header("部位")
-        injured_area = st.multiselect('',['頭','手','腳','臉','眼','嘴巴(含牙齒)','脖子','肩','胸','肚子','背','耳鼻喉','腰','屁股','會陰部'])
+        injured_area=[]#寄送電子郵件用的串列
         injured_part_result=[] #受傷部位結果之串列
-        for i in injured_area:
-            selected_number=injured_part.index(i)
-            injured_part_result.append(selected_number)       
-
+        col1, col2, col3,col4,col5 = st.columns(5)
+        if col1.checkbox('頭'):
+            injured_part_result.append(injured_part.index("頭"))
+            injured_area.append('頭')
+        if col2.checkbox('臉'):
+            injured_part_result.append(injured_part.index('臉'))
+            injured_area.append('臉')
+        if col3.checkbox('眼'):
+            injured_part_result.append(injured_part.index('眼'))
+            injured_area.append('眼')
+        if col4.checkbox('耳鼻喉'):
+            injured_part_result.append(injured_part.index('耳鼻喉'))
+            injured_area.append('耳鼻喉')
+        if col5.checkbox('嘴(含牙齒)'):
+            injured_part_result.append(injured_part.index('嘴(含牙齒)'))
+            injured_area.append('嘴(含牙齒)')
+         
+        col6, col7, col8,col9,col10 = st.columns(5)
+        if col6.checkbox('手'):
+            injured_part_result.append(injured_part.index('手'))
+            injured_area.append('手')
+        if col7.checkbox('脖子'):
+            injured_part_result.append(injured_part.index('脖子'))
+            injured_area.append('脖子')
+        if col8.checkbox('肩'):
+            injured_part_result.append(injured_part.index('肩'))
+            injured_area.append('肩')
+        if col9.checkbox('胸'):
+            injured_part_result.append(injured_part.index('胸'))
+            injured_area.append('胸')
+        if col10.checkbox('肚子'):
+            injured_part_result.append(injured_part.index('肚子'))
+            injured_area.append('肚子')
+        
+        col11, col12, col13,col14,col15 = st.columns(5)
+        if col11.checkbox('腳'):
+            injured_part_result.append(injured_part.index('腳'))
+            injured_area.append('腳')
+        if col12.checkbox('背'):
+            injured_part_result.append(injured_part.index('背'))
+            injured_area.append('背')
+        if col13.checkbox('腰'):
+            injured_part_result.append(injured_part.index('腰'))
+            injured_area.append('腰')
+        if col14.checkbox('屁股'):
+            injured_part_result.append(injured_part.index('屁股'))
+            injured_area.append('屁股')
+        if col15.checkbox('會陰部'):
+            injured_part_result.append(injured_part.index('會陰部'))
+            injured_area.append('會陰部')
+        #st.write(injured_area)
+        #st.write(injured_part_result)
+        #舊選擇法
+        #injured_area = st.multiselect('',['頭','手','腳','臉','眼','嘴(含牙齒)','脖子','肩','胸','肚子','背','耳鼻喉','腰','屁股','會陰部'])
+        #for i in injured_area:
+        #    selected_number=injured_part.index(i)
+        #    injured_part_result.append(selected_number)
+        #st.write(injured_part_result)       
+        st.write('------------')
+        
         st.header("外傷種類")
-        trauma = st.multiselect('',trauma_type)
+        trauma=[]
         trauma_result=[]
-        for i in trauma:
-            selected_number=trauma_type.index(i)
-            trauma_result.append(selected_number)
+        cola1, cola2, cola3,cola4,cola5 = st.columns(5)
+        if cola1.checkbox('擦傷'):
+            trauma_result.append(trauma_type.index('擦傷'))
+            trauma.append('擦傷')
+        if cola2.checkbox('割裂刺傷'):
+            trauma_result.append(trauma_type.index('割裂刺傷'))
+            trauma.append('割裂刺傷')
+        if cola3.checkbox('壓夾傷'):
+            trauma_result.append(trauma_type.index('壓夾傷'))
+            trauma.append('壓夾傷')
+        if cola4.checkbox('挫撞傷'):
+            trauma_result.append(trauma_type.index('挫撞傷'))
+            trauma.append('挫撞傷')
+        if cola5.checkbox('扭傷'):
+            trauma_result.append(trauma_type.index('扭傷'))
+            trauma.append('扭傷')
+         
+        cola6, cola7, cola8,cola9,cola10= st.columns(5)
+        if cola6.checkbox('灼燙傷'):
+            trauma_result.append(trauma_type.index('灼燙傷'))
+            trauma.append('灼燙傷')
+        if cola7.checkbox('叮咬傷'):
+            trauma_result.append(trauma_type.index('叮咬傷'))
+            trauma.append('叮咬傷')
+        if cola8.checkbox('骨折'):
+            trauma_result.append(trauma_type.index('骨折'))
+            trauma.append('骨折')
+        if cola9.checkbox('舊傷'):
+            trauma_result.append(trauma_type.index('舊傷'))
+            trauma.append('舊傷')
+        cola10.empty()
+        #st.write(trauma_result)
+        #st.write(trauma)
+        #舊外傷種類選擇法
+        #trauma = st.multiselect('',trauma_type)
+        #for i in trauma:
+        #    selected_number=trauma_type.index(i)
+        #    trauma_result.append(selected_number)
 
-        if trauma:
-            st.header("受傷地點(外傷需點選)")
-            pre_get_hurt_places=st.selectbox("",injured_places)
+        if trauma_result:
+            st.header("🗺受傷地點(外傷需點選)")
+            pre_get_hurt_places=st.radio("",injured_places)
             get_hurt_places=injured_places.index(pre_get_hurt_places)
-
-
+        #st.write(get_hurt_places)
         st.write('------------')
+
         st.header("症狀")
-        Internal_Medicine = st.multiselect('',Internal_Medicine_type)
         Internal_Medicine_result=[]
-        for i in Internal_Medicine:
-            selected_number=Internal_Medicine_type.index(i)
-            Internal_Medicine_result.append(selected_number)
-
+        Internal_Medicine=[]
+        colb1, colb2, colb3,colb4,colb5 = st.columns(5)
+        if colb1.checkbox('發燒'):
+            Internal_Medicine_result.append(Internal_Medicine_type.index("發燒"))
+            Internal_Medicine.append('發燒')
+        if colb2.checkbox('暈眩'):
+            Internal_Medicine_result.append(Internal_Medicine_type.index('暈眩'))
+            Internal_Medicine.append('暈眩')
+        if colb3.checkbox('噁心嘔吐'):
+            Internal_Medicine_result.append(Internal_Medicine_type.index('噁心嘔吐'))
+            Internal_Medicine.append('噁心嘔吐')
+        if colb4.checkbox('頭痛'):
+            Internal_Medicine_result.append(Internal_Medicine_type.index('頭痛'))
+            Internal_Medicine.append('頭痛')
+        if colb5.checkbox('牙痛'):
+            Internal_Medicine_result.append(Internal_Medicine_type.index('牙痛'))
+            Internal_Medicine.append('牙痛')
+         
+        colb6, colb7, colb8,colb9,colb10 = st.columns(5)
+        if colb6.checkbox('胃痛'):
+            Internal_Medicine_result.append(Internal_Medicine_type.index('胃痛'))
+            Internal_Medicine.append('胃痛')
+        if colb7.checkbox('腹痛'):
+            Internal_Medicine_result.append(Internal_Medicine_type.index('腹痛'))
+            Internal_Medicine.append('腹痛')
+        if colb8.checkbox('腹瀉'):
+            Internal_Medicine_result.append(Internal_Medicine_type.index('腹瀉'))
+            Internal_Medicine.append('腹瀉')
+        if colb9.checkbox('經痛'):
+            Internal_Medicine_result.append(Internal_Medicine_type.index('經痛'))
+            Internal_Medicine.append('經痛')
+        if colb10.checkbox('氣喘'):
+            Internal_Medicine_result.append(Internal_Medicine_type.index('氣喘'))
+            Internal_Medicine.append('氣喘')
+        
+        colb11, colb12, colb13,colb14,colb15 = st.columns(5)
+        if colb11.checkbox('流鼻血'):
+            Internal_Medicine_result.append(Internal_Medicine_type.index('流鼻血'))
+            Internal_Medicine.append('流鼻血')
+        if colb12.checkbox('疹癢'):
+            Internal_Medicine_result.append(Internal_Medicine_type.index('疹癢'))
+            Internal_Medicine.append('疹癢')
+        if colb13.checkbox('眼疾'):
+            Internal_Medicine_result.append(Internal_Medicine_type.index('眼疾'))
+            Internal_Medicine.append('眼疾')
+        colb14.empty()
+        colb15.empty()
+        #st.write(Internal_Medicine_result)
+        #st.write(Internal_Medicine)
         st.write('------------')
+        #舊症狀選擇法
+        #Internal_Medicine = st.multiselect('',Internal_Medicine_type)
+        #for i in Internal_Medicine:
+        #    selected_number=Internal_Medicine_type.index(i)
+        #    Internal_Medicine_result.append(selected_number)
+
         st.header("處置作為")
-        treat_method_choice = st.multiselect('',treat_method)
+        #treat_method=['','','','','通知家長','家長帶回','校方送醫','衛生教育','其他']
+        treat_method_choice=[]
         treat_method_result=[]
-        for i in treat_method_choice:
-            selected_number=treat_method.index(i)
-            treat_method_result.append(selected_number)
+        colc1, colc2, colc3,colc4,colc5 = st.columns(5)
+        if colc1.checkbox('傷口處理'):
+            treat_method_result.append(treat_method.index("傷口處理"))
+            treat_method_choice.append('傷口處理')
+        if colc2.checkbox('冰敷'):
+            treat_method_result.append(treat_method.index('冰敷'))
+            treat_method_choice.append('冰敷')
+        if colc3.checkbox('熱敷'):
+            treat_method_result.append(treat_method.index('熱敷'))
+            treat_method_choice.append('熱敷')
+        if colc4.checkbox('休息觀察'):
+            treat_method_result.append(treat_method.index('休息觀察'))
+            treat_method_choice.append('休息觀察')
+        if colc5.checkbox('通知家長'):
+            treat_method_result.append(treat_method.index('通知家長'))
+            treat_method_choice.append('通知家長')
+         
+        colc6, colc7, colc8,colc9,colc10 = st.columns(5)
+        if colc6.checkbox('家長帶回'):
+            treat_method_result.append(treat_method.index('家長帶回'))
+            treat_method_choice.append('家長帶回')
+        if colc7.checkbox('校方送醫'):
+            treat_method_result.append(treat_method.index('校方送醫'))
+            treat_method_choice.append('校方送醫')
+        if colc8.checkbox('衛生教育'):
+            treat_method_result.append(treat_method.index('衛生教育'))
+            treat_method_choice.append('衛生教育')
+        if colc9.checkbox('其他'):
+            treat_method_result.append(treat_method.index('其他'))
+            treat_method_choice.append('其他')
+        colc10.empty()    
+        #st.write(treat_method_result)
+        #st.write(treat_method_choice)
+        #treat_method_choice = st.multiselect('',treat_method)
+        #
+        #for i in treat_method_choice:
+        #    selected_number=treat_method.index(i)
+        #    treat_method_result.append(selected_number)
         
         st.write("-------")
         if not injured_part_result  and not trauma_result and not Internal_Medicine_result and not treat_method_result and not txtMemo:
