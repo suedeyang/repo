@@ -401,7 +401,8 @@ if not grade == 0 and not classes == 0 and not numbers == 0:
             #st.error("請輸入傷病資料")    
             st.empty()
         else:
-            if st.button(basic_data+"  輸入完畢 送出資料"):
+            if st.button(basic_data+" 輸入完畢送出(按1下就好)"):
+                st.write("資料處理中 請不要再按滑鼠")
                 x1,x2=add_to_airtable(basic_data,str(injured_part_result),str(trauma_result),str(Internal_Medicine_result),str(treat_method_result),str(body_temperature),obseravtion_time,get_hurt_places,str(txtMemo))
                 #st.write("資料寫入中")
                 if x1 > 300 or x2 > 300:
