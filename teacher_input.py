@@ -32,3 +32,4 @@ if input_result:
 
 
 
+#autofocus的問題 https://discuss.streamlit.io/t/why-does-my-text-input-not-focus-with-script-in-component-html-when-sessionstore-is-unchanged/18289
