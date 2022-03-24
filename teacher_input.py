@@ -3,6 +3,30 @@ import streamlit.components.v1 as components
 import pandas as pd
 import time
 import re
+import requests
+
+KEY=''
+endpoint='https://api.airtable.com/v0/appCY8QfugFWkKMvH/id'
+
+def add_to_airtable(id):
+    #Python requests headers
+    headers={
+        "Authorization": f'Bearer {KEY}', #注意前面的,
+        "Content-Type" : "application/json"
+    }
+
+    data= {
+    "records": [
+            {
+            "fields": {
+                "ID": id ,
+                }
+            }
+        ]
+    }
+    r=requests.post(endpoint,json=data,headers=headers)
+    #print(r.status_code) #HTTP status code
+    return r.status_code
 
 
 reload_html_string = '''
@@ -36,10 +60,16 @@ if input_result:
         if input_result in proxy_list:
             index_number=proxy_list.index(input_result)
             ID=df.ID_number[index_number].upper()
-            success_message=f'{ID} 簽到成功'
-            st.success(success_message)
-            time.sleep(1)
-            st.markdown(reload_html_string, unsafe_allow_html=True)
+            airtable_response=add_to_airtable(ID)
+            if airtable_response > 300:
+                st.error('網路傳送失敗，請重新簽到')
+                time.sleep(1)
+                st.markdown(reload_html_string, unsafe_allow_html=True)
+            else:
+                success_message=f'{ID} 簽到成功'
+                st.success(success_message)
+                time.sleep(0.5)
+                st.markdown(reload_html_string, unsafe_allow_html=True)
         else:
             st.error('電梯感應扣未註冊，請改輸入身分證號')
             time.sleep(1)
@@ -51,10 +81,16 @@ if input_result:
             time.sleep(1)
             st.markdown(reload_html_string, unsafe_allow_html=True)
         else:
-            success_message=f'{input_result.upper()} 簽到成功'
-            st.success(success_message)
-            time.sleep(1)
-            st.markdown(reload_html_string, unsafe_allow_html=True)
+            airtable_response=add_to_airtable(input_result.upper())
+            if airtable_response > 300:
+                st.error('網路傳送失敗，請重新簽到')
+                time.sleep(1)
+                st.markdown(reload_html_string, unsafe_allow_html=True)
+            else:
+                success_message=f'{input_result.upper()} 簽到成功'
+                st.success(success_message)
+                time.sleep(0.5)
+                st.markdown(reload_html_string, unsafe_allow_html=True)
 
 
 
