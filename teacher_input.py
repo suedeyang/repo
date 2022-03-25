@@ -5,8 +5,6 @@ import time
 import re
 import requests
 
-@st.cache
-
 KEY=''
 endpoint='https://api.airtable.com/v0/appCY8QfugFWkKMvH/id'
 
@@ -49,7 +47,6 @@ components.html(
         <div>some hidden container</div>
         <script>
             var input = window.parent.document.querySelectorAll("input[type=text]");
-
             for (var i = 0; i < input.length; ++i) {{
                 input[i].focus();
             }}
@@ -72,7 +69,7 @@ if input_result:
             else:
                 success_message=f'{ID} 簽到成功'
                 st.success(success_message)
-                #time.sleep(0.5)
+                time.sleep(0.5)
                 st.markdown(reload_html_string, unsafe_allow_html=True)
         else:
             st.error('電梯感應扣未註冊，請改輸入身分證號')
