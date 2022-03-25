@@ -5,6 +5,8 @@ import time
 import re
 import requests
 
+@st.cache
+
 KEY=''
 endpoint='https://api.airtable.com/v0/appCY8QfugFWkKMvH/id'
 
@@ -35,10 +37,11 @@ reload_html_string = '''
 </head>
 '''
 
-df=pd.read_csv('id.txt', sep=',')
-proxy_list=df.proxy_key.tolist()
 st.title("龍華國小研習簽到")
 input_result=st.text_input("請 感應電梯磁扣 或 輸入身分證號後按ENTER鍵",max_chars=10)
+df=pd.read_csv('id.txt', sep=',')
+proxy_list=df.proxy_key.tolist()
+
 
 #autofocus程式碼，要放在文字輸入框產生後再執行比較不會出錯
 components.html(
@@ -60,6 +63,7 @@ if input_result:
         if input_result in proxy_list:
             index_number=proxy_list.index(input_result)
             ID=df.ID_number[index_number].upper()
+            #add_to_airtable(ID)
             airtable_response=add_to_airtable(ID)
             if airtable_response > 300:
                 st.error('網路傳送失敗，請重新簽到')
@@ -68,7 +72,7 @@ if input_result:
             else:
                 success_message=f'{ID} 簽到成功'
                 st.success(success_message)
-                time.sleep(0.5)
+                #time.sleep(0.5)
                 st.markdown(reload_html_string, unsafe_allow_html=True)
         else:
             st.error('電梯感應扣未註冊，請改輸入身分證號')
