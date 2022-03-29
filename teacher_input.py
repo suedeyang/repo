@@ -5,8 +5,8 @@ import time
 import re
 import requests
 
-KEY=''
-endpoint='https://api.airtable.com/v0/appCY8QfugFWkKMvH/id'
+#KEY=''
+#endpoint='https://api.airtable.com/v0/appCY8QfugFWkKMvH/id'
 
 def add_to_airtable(id):
     #Python requests headers
@@ -27,19 +27,20 @@ def add_to_airtable(id):
     r=requests.post(endpoint,json=data,headers=headers)
     #print(r.status_code) #HTTP status code
     return r.status_code
-
+def add_to_txt(id):
+    with open('appendSomething.txt', 'a') as f:
+        f.write(f'{id}\n')
 
 reload_html_string = '''
 <head>
         <meta http-equiv="refresh" content="0" />
 </head>
 '''
-
-st.title("龍華國小研習簽到")
-input_result=st.text_input("請 感應電梯磁扣 或 輸入身分證號後按ENTER鍵",max_chars=10)
+st.markdown('# 龍華國小教師進修簽到 #')
+st.markdown('## **感應電梯磁扣** or **直接輸入身分證字號(輸入完畢按ENTER)** ##', unsafe_allow_html=False)
+input_result=st.text_input("",max_chars=10)
 df=pd.read_csv('id.txt', sep=',')
 proxy_list=df.proxy_key.tolist()
-
 
 #autofocus程式碼，要放在文字輸入框產生後再執行比較不會出錯
 components.html(
@@ -60,17 +61,17 @@ if input_result:
         if input_result in proxy_list:
             index_number=proxy_list.index(input_result)
             ID=df.ID_number[index_number].upper()
-            #add_to_airtable(ID)
-            airtable_response=add_to_airtable(ID)
-            if airtable_response > 300:
-                st.error('網路傳送失敗，請重新簽到')
-                time.sleep(1)
-                st.markdown(reload_html_string, unsafe_allow_html=True)
-            else:
-                success_message=f'{ID} 簽到成功'
-                st.success(success_message)
-                time.sleep(0.5)
-                st.markdown(reload_html_string, unsafe_allow_html=True)
+            add_to_txt(ID)
+            #airtable_response=add_to_airtable(ID)
+            #if airtable_response > 300:
+            #    st.error('網路傳送失敗，請重新簽到')
+            #time.sleep(0.5)
+            #st.markdown(reload_html_string, unsafe_allow_html=True)
+            #else:
+            success_message=f'{ID} 簽到成功'
+            st.success(success_message)
+            #time.sleep(0.5)
+            st.markdown(reload_html_string, unsafe_allow_html=True)
         else:
             st.error('電梯感應扣未註冊，請改輸入身分證號')
             time.sleep(1)
@@ -82,16 +83,17 @@ if input_result:
             time.sleep(1)
             st.markdown(reload_html_string, unsafe_allow_html=True)
         else:
-            airtable_response=add_to_airtable(input_result.upper())
-            if airtable_response > 300:
-                st.error('網路傳送失敗，請重新簽到')
-                time.sleep(1)
-                st.markdown(reload_html_string, unsafe_allow_html=True)
-            else:
-                success_message=f'{input_result.upper()} 簽到成功'
-                st.success(success_message)
-                time.sleep(0.5)
-                st.markdown(reload_html_string, unsafe_allow_html=True)
+            #airtable_response=add_to_airtable(input_result.upper())
+            #if airtable_response > 300:
+            #    st.error('網路傳送失敗，請重新簽到')
+            #    time.sleep(1)
+            #    st.markdown(reload_html_string, unsafe_allow_html=True)
+            #else:
+            add_to_txt(input_result.upper())
+            success_message=f'{input_result.upper()} 簽到成功'
+            st.success(success_message)
+            #time.sleep(0.5)
+            st.markdown(reload_html_string, unsafe_allow_html=True)
 
 
 
