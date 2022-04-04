@@ -3,8 +3,13 @@ import pandas as pd
 from PIL import Image
 import requests
 import streamlit.components.v1 as components
+from streamlit_lottie import st_lottie
 
-
+def load_lottieurl(url: str):
+    r = requests.get(url)
+    if r.status_code != 200:
+        return None
+    return r.json()
 
 classrooms=["自然教室1","自然教室2","自然教室3","自然教室4","自然教室5","自然教室6","自然教室7","蝴蝶園教室","電腦教室1","電腦教室2","電腦教室3","語言教室1","語言教室2","表演藝術教室","音樂教室2","協同教室","美勞教室1","美勞教室2","美勞教室3"]
 selected_classroom=[]
@@ -50,6 +55,9 @@ if class_1 or names or selected_classroom or special_names:
     st.dataframe(selected_data.astype(str))
 else:
     st.caption("點選左上角的 > 開始查詢課表")
+    lottie_url_hello ="https://assets6.lottiefiles.com/packages/lf20_i7ooqm2q.json"
+    lottie_hello = load_lottieurl(lottie_url_hello)
+    st_lottie(lottie_hello, key="hello")
 
 for i in final_result_list:
     #st.image(f'https://raw.githubusercontent.com/suedeyang/img/main/{i}.jpg')

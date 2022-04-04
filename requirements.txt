@@ -1,3 +1,4 @@
 streamlit_autorefresh
 pandas
 lxml
+streamlit-lottie
