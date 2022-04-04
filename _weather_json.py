@@ -8,11 +8,13 @@ from streamlit_autorefresh import st_autorefresh
 
 st_autorefresh(interval=600000) # 2000 milliseconds (2 seconds)
 
+#with open('style.css') as f:
+#    st.markdown(f'<style>{f.read()}</style>', unsafe_allow_html=True)
+
 
 st.markdown('<h1 style="font-family: Noto Sans TC, sans-serif;margin-top:-1em;font-size: 5rem;text-align:center;">龍華國小環境指數</h1>', unsafe_allow_html=True)
 
 st.markdown("""
-
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossorigin="anonymous">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@500&display=swap" rel="stylesheet">
 <style>
@@ -21,7 +23,6 @@ body{
 }
 </style>
 """, unsafe_allow_html=True)
-
 
 url_AQI='https://data.epa.gov.tw/api/v1/aqx_p_432?limit=1000&api_key=9be7b239-557b-4c10-9775-78cadfc555e9&sort=ImportDate%20desc&format=json'
 url_UVI="https://data.epa.gov.tw/api/v1/uv_s_01?limit=40&api_key=9be7b239-557b-4c10-9775-78cadfc555e9&sort=ImportDate%20desc&format=json"
@@ -40,7 +41,6 @@ def get_uvi_data():
         if uvi_data['SiteName'] == '橋頭':
             #print(uvi_data)
             return uvi_data
-
 
 
 def display_data():
