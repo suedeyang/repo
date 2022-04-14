@@ -39,10 +39,9 @@ def reset_box():
         if st.session_state.input_box in proxy_list:
             index_number=proxy_list.index(st.session_state.input_box)
             ID=df.ID_number[index_number].upper()
+            
             with open('appendSomething.txt', 'a') as f:
                 f.write(f'{ID}\n')
-            #    checked_numbers=f.readlines()
-            #    st.write(len(checked_numbers))
             success_message=f'{ID} 簽到成功，下一位老師請繼續簽到'
             st.success(success_message)
             st.session_state.input_box = '' #清空
@@ -57,16 +56,27 @@ def reset_box():
             st.session_state.input_box = '' #清空 
         
         else:
-            sum = alphaTable[st.session_state.input_box[0]] + int(st.session_state.input_box[1]) * 8 + int(st.session_state.input_box[2]) * 7 + int(st.session_state.input_box[3]) * 6 + int(st.session_state.input_box[4]) * 5 + int(st.session_state.input_box[5]) * 4 + int(st.session_state.input_box[6]) * 3 + int(st.session_state.input_box[7]) * 2 + int(st.session_state.input_box[8]) * 1 + int(st.session_state.input_box[9])
+            sum = alphaTable[st.session_state.input_box.upper()[0]] + int(st.session_state.input_box[1]) * 8 + int(st.session_state.input_box[2]) * 7 + int(st.session_state.input_box[3]) * 6 + int(st.session_state.input_box[4]) * 5 + int(st.session_state.input_box[5]) * 4 + int(st.session_state.input_box[6]) * 3 + int(st.session_state.input_box[7]) * 2 + int(st.session_state.input_box[8]) * 1 + int(st.session_state.input_box[9])
             if sum % 10 != 0:
                 st.error('身分證字號驗證錯誤，請重新輸入')
                 st.session_state.input_box = '' #清空
             else:
                 with open('appendSomething.txt', 'a') as f:
-                    f.write(f'{st.session_state.input_box}\n')
+                    f.write(f'{st.session_state.input_box.upper()}\n')
                 success_message=f'{st.session_state.input_box.upper()} 簽到成功，下一位老師請繼續簽到'
                 st.success(success_message)
                 st.session_state.input_box = '' #清空
+
+
+def check_login(id):
+    with open('appendSomething.txt',r) as f :
+        txt=f.readlines()
+        if id +"\n" in txt:
+            return True
+        elif id in txt:
+            return True
+        else:
+            return False
 
 df=pd.read_csv('id.txt', sep=',')
 proxy_list=df.proxy_key.tolist()
