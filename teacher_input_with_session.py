@@ -4,6 +4,7 @@ import pandas as pd
 import time
 import re
 import requests
+import os
 #KEY=''
 #endpoint='https://api.airtable.com/v0/appCY8QfugFWkKMvH/id'
 
@@ -40,6 +41,8 @@ def reset_box():
             ID=df.ID_number[index_number].upper()
             with open('appendSomething.txt', 'a') as f:
                 f.write(f'{ID}\n')
+            #    checked_numbers=f.readlines()
+            #    st.write(len(checked_numbers))
             success_message=f'{ID} 簽到成功，下一位老師請繼續簽到'
             st.success(success_message)
             st.session_state.input_box = '' #清空
@@ -84,8 +87,19 @@ components.html(
     """,
     height=1
 )
-
-
-
+if os.path.isfile("appendSomething.txt"):
+    with open("appendSomething.txt",'r') as count_f:
+        checked_numbers=count_f.readlines()
+        st.write("目前累計簽到人數：",len(checked_numbers))
+        st.write("最近5筆簽到資料：")
+        if len(checked_numbers) < 5:
+            end_point=-len(checked_numbers) - 1
+            for i in range(-1,end_point,-1):
+                st.write(checked_numbers[i])
+        else:
+            for i in range(-1,-6,-1): 
+                st.write(checked_numbers[i])
+else:
+    st.write("目前累計簽到人數：0")
 
 #autofocus的問題 https://discuss.streamlit.io/t/why-does-my-text-input-not-focus-with-script-in-component-html-when-sessionstore-is-unchanged/18289
