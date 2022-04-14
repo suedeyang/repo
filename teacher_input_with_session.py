@@ -39,12 +39,16 @@ def reset_box():
         if st.session_state.input_box in proxy_list:
             index_number=proxy_list.index(st.session_state.input_box)
             ID=df.ID_number[index_number].upper()
-            
-            with open('appendSomething.txt', 'a') as f:
-                f.write(f'{ID}\n')
-            success_message=f'{ID} 簽到成功，下一位老師請繼續簽到'
-            st.success(success_message)
-            st.session_state.input_box = '' #清空
+            if check_login(ID):
+                success_message=f'{ID} 重複簽到成功，下一位老師請繼續簽到'
+                st.success(success_message)
+                st.session_state.input_box = '' #清空
+            else:
+                with open('appendSomething.txt', 'a') as f:
+                    f.write(f'{ID}\n')
+                success_message=f'{ID} 簽到成功，下一位老師請繼續簽到'
+                st.success(success_message)
+                st.session_state.input_box = '' #清空
         else:
             st.error('電梯感應扣未註冊，請改輸入身分證號')
             time.sleep(1)
@@ -61,19 +65,22 @@ def reset_box():
                 st.error('身分證字號驗證錯誤，請重新輸入')
                 st.session_state.input_box = '' #清空
             else:
-                with open('appendSomething.txt', 'a') as f:
-                    f.write(f'{st.session_state.input_box.upper()}\n')
-                success_message=f'{st.session_state.input_box.upper()} 簽到成功，下一位老師請繼續簽到'
-                st.success(success_message)
-                st.session_state.input_box = '' #清空
+                if check_login(st.session_state.input_box.upper()):
+                    success_message=f'{st.session_state.input_box.upper()} 重複簽到成功，下一位老師請繼續簽到'
+                    st.success(success_message)
+                    st.session_state.input_box = '' #清空
+                else:
+                    with open('appendSomething.txt', 'a') as f:
+                        f.write(f'{st.session_state.input_box.upper()}\n')
+                    success_message=f'{st.session_state.input_box.upper()} 簽到成功，下一位老師請繼續簽到'
+                    st.success(success_message)
+                    st.session_state.input_box = '' #清空
 
 
 def check_login(id):
-    with open('appendSomething.txt',r) as f :
+    with open('appendSomething.txt','r') as f :
         txt=f.readlines()
-        if id +"\n" in txt:
-            return True
-        elif id in txt:
+        if id +"\n" in txt or id in txt :
             return True
         else:
             return False
