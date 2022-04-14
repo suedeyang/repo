@@ -49,17 +49,21 @@ def reset_box():
             st.session_state.input_box = '' #清空
     else:
         id_check=re.fullmatch("^[A-Z][12][0-9]{8}$",st.session_state.input_box.upper())
-        sum = alphaTable[st.session_state.input_box[0]] + int(st.session_state.input_box[1]) * 8 + int(st.session_state.input_box[2]) * 7 + int(st.session_state.input_box[3]) * 6 + int(st.session_state.input_box[4]) * 5 + int(st.session_state.input_box[5]) * 4 + int(st.session_state.input_box[6]) * 3 + int(st.session_state.input_box[7]) * 2 + int(st.session_state.input_box[8]) * 1 + int(st.session_state.input_box[9])
-        if id_check == None or sum % 10 != 0:
+        if id_check == None:
             st.error('身分證字號輸入錯誤，請重新輸入')
-            st.session_state.input_box = '' #清空
-
+            st.session_state.input_box = '' #清空 
+        
         else:
-            with open('appendSomething.txt', 'a') as f:
-                f.write(f'{st.session_state.input_box}\n')
-            success_message=f'{st.session_state.input_box.upper()} 簽到成功，下一位老師請繼續簽到'
-            st.success(success_message)
-            st.session_state.input_box = '' #清空
+            sum = alphaTable[st.session_state.input_box[0]] + int(st.session_state.input_box[1]) * 8 + int(st.session_state.input_box[2]) * 7 + int(st.session_state.input_box[3]) * 6 + int(st.session_state.input_box[4]) * 5 + int(st.session_state.input_box[5]) * 4 + int(st.session_state.input_box[6]) * 3 + int(st.session_state.input_box[7]) * 2 + int(st.session_state.input_box[8]) * 1 + int(st.session_state.input_box[9])
+            if sum % 10 != 0:
+                st.error('身分證字號驗證錯誤，請重新輸入')
+                st.session_state.input_box = '' #清空
+            else:
+                with open('appendSomething.txt', 'a') as f:
+                    f.write(f'{st.session_state.input_box}\n')
+                success_message=f'{st.session_state.input_box.upper()} 簽到成功，下一位老師請繼續簽到'
+                st.success(success_message)
+                st.session_state.input_box = '' #清空
 
 df=pd.read_csv('id.txt', sep=',')
 proxy_list=df.proxy_key.tolist()
