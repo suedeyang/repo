@@ -78,12 +78,15 @@ def reset_box():
 
 
 def check_login(id):
-    with open('appendSomething.txt','r') as f :
-        txt=f.readlines()
-        if id +"\n" in txt or id in txt :
-            return True
-        else:
-            return False
+    if os.path.isfile("appendSomething.txt"):
+        with open('appendSomething.txt','r') as f :
+            txt=f.readlines()
+            if id +"\n" in txt or id in txt :
+                return True
+            else:
+                return False
+    else:
+        return False
 
 df=pd.read_csv('id.txt', sep=',')
 proxy_list=df.proxy_key.tolist()
