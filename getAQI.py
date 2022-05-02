@@ -1,7 +1,6 @@
 
 import requests
 
-url_UVI="https://data.epa.gov.tw/api/v2/uv_s_01?api_key=1a533517-0c08-4d8f-9948-f3706970a4e5&format=json&filters=sitename,eq,高雄&limit=1"
-uvi_datas=requests.get(url_UVI).json()['records']
-print(uvi_datas[0]['uvi'])
-print(uvi_datas[0]['publishtime'])
+airbox_url="https://pm25.lass-net.org/data/last.php?device_id=08BEAC252B3A"
+temp=requests.get(airbox_url).json()['feeds'][0]['AirBox']['s_t0']
+print(temp)
