@@ -6,7 +6,7 @@ import time
 from streamlit.state.session_state import Value
 from streamlit_autorefresh import st_autorefresh
 
-st_autorefresh(interval=600000) # 2000 milliseconds (2 seconds)
+#st_autorefresh(interval=600000) # 2000 milliseconds (2 seconds)
 
 #with open('style.css') as f:
 #    st.markdown(f'<style>{f.read()}</style>', unsafe_allow_html=True)
@@ -34,6 +34,12 @@ def get_aqi_data():
 def get_uvi_data():    
     uvi_datas=requests.get(url_UVI).json()['records']
     return uvi_datas
+
+aqidata=aqi_data=requests.get(new_url_AQI).json()['records'][0]['aqi']
+st.write(aqi_data)
+uvi_data=requests.get(url_UVI).json()['records'][0]['uvi']
+st.write(uvi_data)
+
 
 def display_data():
     aqidata=get_aqi_data()
@@ -68,22 +74,6 @@ def display_data():
     else:
         uvi_font_color = "#B34FA2"
         uvi_status="危險級"
-    pm2_5=float(aqidata[0]['PM2.5'])
-    pm2_5_AVG=float(aqidata[0]['PM2.5_AVG'])
-    pm2_5_delta=pm2_5-pm2_5_AVG
-
-    pm10=float(aqidata[0]['PM10'])
-    pm10_AVG=float(aqidata[0]['PM10_AVG'])
-    pm10_delta=pm10-pm10_AVG
-
-    ozone=float(aqidata[0]['O3'])
-    ozone_AVG=float(aqidata[0]['O3_8hr'])
-    ozone_delta=round(ozone-ozone_AVG,1)
-    
-    sitename=aqidata[0]['siteName']
-    pollutant=aqidata[0]['pollutant']
-    aqi_update_time=aqidata[0]['importdate']
-    uvi_update_time=uvidata[0]['publishtime']
     
     #print(aqi_update_time[11:16])
     #print(uvi_update_time[11:16])
@@ -94,21 +84,7 @@ def display_data():
     colb.markdown(f'<h1 style="font-family: Noto Sans TC, sans-serif;margin-top: -1em;text-align:center;">紫外線{uvi_status}</h1>',unsafe_allow_html=True )
     st.markdown(' --- ')
 
-    col1,col2,col3,col4,col5=st.columns(5)
-    
-    col1.metric("PM2.5數值",value=aqidata[0]['PM2.5'],delta=pm2_5_delta)
-    col2.metric("PM10數值",value=aqidata[0]['PM10'],delta=pm10_delta)
-    col3.metric("臭氧",value=aqidata[0]['O3'],delta=ozone_delta)
-    col4.metric("AQI數據更新時間",value=aqi_update_time[11:16])
-    col5.metric("UVI數據更新時間",value=uvi_update_time[11:16])
-    
-    if pollutant:
-        col6,col7,col8=st.columns(3)
-        col6.metric("主要汙染物",pollutant)
-        col7.metric("測站位置",sitename)
-        col8.metric("",value="")
-
 #data=get_data()
 #display_data()
 
-display_data()
+#display_data()
