@@ -1,9 +1,9 @@
 import streamlit as st
 import pandas as pd
-from PIL import Image
+#from PIL import Image
 import requests
 import streamlit.components.v1 as components
-from streamlit_lottie import st_lottie
+#from streamlit_lottie import st_lottie
 
 def load_lottieurl(url: str):
     r = requests.get(url)
