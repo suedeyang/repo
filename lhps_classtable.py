@@ -65,7 +65,7 @@ for i in final_result_list:
     #img=Image.open(requests.get(f"http://163.16.245.102/online-portal/html/imgs/{i}.jpg",stream=True).raw)
     #st.image(img)
     #st.markdown(f'<img width="90%" src=http://163.16.245.102/online-portal/html/imgs/{i}.jpg>',unsafe_allow_html=True)
-    #st.write("---------------")
+    st.write("---------------")
 
 components.html(
     """
