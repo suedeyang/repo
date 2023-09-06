@@ -5,6 +5,9 @@ import requests
 import streamlit.components.v1 as components
 #from streamlit_lottie import st_lottie
 
+
+
+
 def load_lottieurl(url: str):
     r = requests.get(url)
     if r.status_code != 200:
@@ -13,7 +16,9 @@ def load_lottieurl(url: str):
 
 classrooms=["自然教室1","自然教室2","自然教室3","自然教室4","自然教室5","自然教室6","自然教室7","蝴蝶園教室","電腦教室1","電腦教室2","電腦教室3","語言教室1","語言教室2","表演藝術教室","音樂教室2","協同教室","美勞教室1","美勞教室2","美勞教室3"]
 selected_classroom=[]
-url="http://school.kh.edu.tw/view/index.php?WebID=180&MainType=0&SubType=103&MainMenuId=9277&SubMenuId=74138&NowMainId=9277&NowSubId=74138"
+url = "http://www.lhps.kh.edu.tw/view/index.php?WebID=180&MainType=0&SubType=103&MainMenuId=9277&SubMenuId=74138&NowMainId=9277&NowSubId=74138"
+
+
 html=pd.read_html(url,header=0)
 df=html[0]
 df.drop(['NO.'],axis=1)
@@ -25,7 +30,7 @@ df=df.fillna("")
 st.sidebar.header("請選擇班級或科任老師(可多選)")
 class_1=st.sidebar.multiselect("班級",df.職稱.unique()[7:93],help="可一次選取多個班級")
 special_names=st.sidebar.multiselect("主任",df.姓名[1:5],help="可一次選取多位老師")
-names=st.sidebar.multiselect("科任老師",df.姓名[118:176],help="可一次選取多位老師")
+names=st.sidebar.multiselect("科任老師",df.姓名[119:177],help="可一次選取多位老師")
 select_classroom = st.sidebar.multiselect("專科教室", classrooms ,help="可一次選取多間教室")
 combine_list=class_1+names+select_classroom+special_names
 #st.write(combine_list)
@@ -47,7 +52,7 @@ selected_data=df[ (df.職稱.isin(class_1)) | (df.姓名.isin(names))| (df.姓�
 if class_1 or names or selected_classroom or special_names:
     #selected_data=df[ (df.職稱.isin(class_1))]
     st.markdown("""
-    * [**龍華國小教職員工**](http://school.kh.edu.tw/view/index.php?WebID=180&MainType=0&SubType=103&MainMenuId=9277&SubMenuId=74138&NowMainId=9277&NowSubId=74138)
+    * [**龍華國小教職員工**](https://www.lhps.kh.edu.tw/view/index.php?WebID=180&MainType=0&SubType=103&MainMenuId=9277&SubMenuId=74138&NowMainId=9277&NowSubId=74138)
     * [**場地預約系統**](http://rnb.kh.edu.tw/booking/schedule_view.jsp?s=523606)
     * [**龍華國小行事曆**](https://calendar.google.com/calendar/u/0/embed?src=0jpbrq0murj8pmbkfq13ekc12o@group.calendar.google.com&ctz=Asia/Taipei)
     """)
