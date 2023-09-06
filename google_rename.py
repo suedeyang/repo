@@ -56,8 +56,8 @@ driver.find_element(By.ID, "id3b").click()
 time.sleep(1)
 driver.find_element(By.ID, "id50").click()
 time.sleep(1)
-driver.find_element(By.ID, "id73").send_keys("a11141114")
-driver.find_element(By.ID, "id74").send_keys("a11141114")
+driver.find_element(By.ID, "id73").send_keys("")
+driver.find_element(By.ID, "id74").send_keys("")
 driver.find_element(By.ID, "id72").click()
 time.sleep(20)
 '''
@@ -70,8 +70,6 @@ time.sleep(20)
 # 跳過歡迎使用Gmail
 #driver.find_element(By.CLASS_NAME, "ba0 Kj-JD-K7-Jq").click()
 
-
-time.sleep(600)
 '''
 display=driver.find_element(By.ID, 'buildingName')
 display.click()
