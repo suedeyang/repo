@@ -53,7 +53,7 @@ if class_1 or names or selected_classroom or special_names:
     #selected_data=df[ (df.職稱.isin(class_1))]
     st.markdown("""
     * [**龍華國小教職員工**](https://www.lhps.kh.edu.tw/view/index.php?WebID=180&MainType=0&SubType=103&MainMenuId=9277&SubMenuId=74138&NowMainId=9277&NowSubId=74138)
-    * [**場地預約系統**](http://rnb.kh.edu.tw/booking/schedule_view.jsp?s=523606)
+    * [**場地預約系統**](https://booking.kh.edu.tw/schedule_view.jsp?s=523606)
     * [**龍華國小行事曆**](https://calendar.google.com/calendar/u/0/embed?src=0jpbrq0murj8pmbkfq13ekc12o@group.calendar.google.com&ctz=Asia/Taipei)
     """)
     st.header("查詢清單")
