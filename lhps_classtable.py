@@ -30,7 +30,7 @@ df=df.fillna("")
 st.sidebar.header("請選擇班級或科任老師(可多選)")
 class_1=st.sidebar.multiselect("班級",df.職稱.unique()[7:91],help="可一次選取多個班級")
 special_names=st.sidebar.multiselect("主任",df.姓名[1:5],help="可一次選取多位老師")
-names=st.sidebar.multiselect("科任老師",df.姓名[117:172],help="可一次選取多位老師")
+names=st.sidebar.multiselect("科任老師",df.姓名[117:173],help="可一次選取多位老師")
 select_classroom = st.sidebar.multiselect("專科教室", classrooms ,help="可一次選取多間教室")
 combine_list=class_1+names+select_classroom+special_names
 #st.write(combine_list)
